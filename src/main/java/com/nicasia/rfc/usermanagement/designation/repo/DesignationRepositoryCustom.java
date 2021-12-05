@@ -1,0 +1,17 @@
+package com.nicasia.rfc.usermanagement.designation.repo;
+
+import com.nicasia.rfc.abstracts.BaseRepositoryCustom;
+import com.nicasia.rfc.usermanagement.designation.entity.Designation;
+
+import java.util.Optional;
+
+public interface DesignationRepositoryCustom extends BaseRepositoryCustom<Designation> {
+
+    Optional<Designation> findByDesignationCode(String code);
+
+    Optional<Designation> findByDesignationName(String name);
+
+    //Designation findById(Long id);
+
+
+}
