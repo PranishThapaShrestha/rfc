@@ -1,4 +1,4 @@
-package com.nicasia.rfc.exception;
+package com.nicasia.rfc.shared.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

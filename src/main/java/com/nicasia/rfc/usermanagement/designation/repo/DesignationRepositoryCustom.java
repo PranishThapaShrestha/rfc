@@ -1,6 +1,6 @@
 package com.nicasia.rfc.usermanagement.designation.repo;
 
-import com.nicasia.rfc.abstracts.BaseRepositoryCustom;
+import com.nicasia.rfc.shared.abstracts.BaseRepositoryCustom;
 import com.nicasia.rfc.usermanagement.designation.entity.Designation;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.nicasia.rfc.enums;
+package com.nicasia.rfc.shared.enums;
 
 public enum Status {
 

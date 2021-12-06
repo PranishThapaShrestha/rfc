@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.user.entity;
 
-import com.nicasia.rfc.abstracts.BaseEntity;
-import com.nicasia.rfc.enums.RoleName;
+import com.nicasia.rfc.shared.abstracts.BaseEntity;
+import com.nicasia.rfc.shared.enums.RoleName;
 import lombok.Getter;
 import lombok.Setter;
 

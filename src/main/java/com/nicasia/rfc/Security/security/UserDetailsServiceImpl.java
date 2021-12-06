@@ -1,4 +1,4 @@
-package com.nicasia.rfc.usermanagement.security;
+package com.nicasia.rfc.Security.security;
 
 import com.nicasia.rfc.usermanagement.user.entity.User;
 import com.nicasia.rfc.usermanagement.user.repo.UserRepository;

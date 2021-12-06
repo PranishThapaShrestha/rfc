@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.department.repo;
 
-import com.nicasia.rfc.abstracts.BaseRepositoryCustom;
-import com.nicasia.rfc.enums.Status;
+import com.nicasia.rfc.shared.abstracts.BaseRepositoryCustom;
+import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.usermanagement.department.entity.Department;
 
 import java.util.List;

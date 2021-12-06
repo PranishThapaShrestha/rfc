@@ -1,4 +1,4 @@
-package com.nicasia.rfc.abstracts;
+package com.nicasia.rfc.shared.abstracts;
 
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 

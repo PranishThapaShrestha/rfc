@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.designation.service;
 
-import com.nicasia.rfc.exception.ClientException;
-import com.nicasia.rfc.exception.ResourceNotAvailableException;
+import com.nicasia.rfc.shared.exception.ClientException;
+import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.usermanagement.designation.dto.DesignationRequest;
 import com.nicasia.rfc.usermanagement.designation.dto.DesignationResource;
 import com.nicasia.rfc.usermanagement.designation.entity.Designation;

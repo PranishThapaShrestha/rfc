@@ -1,4 +1,4 @@
-package com.nicasia.rfc.succesresponse;
+package com.nicasia.rfc.shared.succesresponse;
 
 import lombok.Builder;
 import lombok.Getter;

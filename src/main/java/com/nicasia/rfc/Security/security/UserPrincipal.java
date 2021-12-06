@@ -1,4 +1,4 @@
-package com.nicasia.rfc.usermanagement.security;
+package com.nicasia.rfc.Security.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nicasia.rfc.usermanagement.user.entity.User;

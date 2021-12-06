@@ -1,6 +1,6 @@
 package com.nicasia.rfc.usermanagement.designation.repo;
 
-import com.nicasia.rfc.abstracts.BaseRepositoryImpl;
+import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
 import com.nicasia.rfc.usermanagement.designation.entity.Designation;
 import com.nicasia.rfc.usermanagement.designation.entity.QDesignation;
 import org.springframework.beans.factory.annotation.Autowired;

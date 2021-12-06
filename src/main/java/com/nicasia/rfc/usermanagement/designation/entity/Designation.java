@@ -1,6 +1,6 @@
 package com.nicasia.rfc.usermanagement.designation.entity;
 
-import com.nicasia.rfc.abstracts.BaseEntity;
+import com.nicasia.rfc.shared.abstracts.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

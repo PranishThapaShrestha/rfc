@@ -1,8 +1,8 @@
 package com.nicasia.rfc.startup;
 
-import com.nicasia.rfc.enums.RoleName;
-import com.nicasia.rfc.enums.Status;
-import com.nicasia.rfc.exception.ResourceNotAvailableException;
+import com.nicasia.rfc.shared.enums.RoleName;
+import com.nicasia.rfc.shared.enums.Status;
+import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.usermanagement.department.entity.Department;
 import com.nicasia.rfc.usermanagement.department.repo.DepartmentRepository;
 import com.nicasia.rfc.usermanagement.designation.entity.Designation;
@@ -12,6 +12,7 @@ import com.nicasia.rfc.usermanagement.user.entity.User;
 import com.nicasia.rfc.usermanagement.user.repo.RoleRepository;
 import com.nicasia.rfc.usermanagement.user.repo.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class DefaultUserCreator {
 
     private final RoleRepository roleRepository;

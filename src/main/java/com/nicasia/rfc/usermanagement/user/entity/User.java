@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.user.entity;
 
-import com.nicasia.rfc.abstracts.BaseEntity;
-import com.nicasia.rfc.enums.Status;
+import com.nicasia.rfc.shared.abstracts.BaseEntity;
+import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.usermanagement.department.entity.Department;
 import com.nicasia.rfc.usermanagement.designation.entity.Designation;
 import lombok.AllArgsConstructor;

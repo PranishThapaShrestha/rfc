@@ -1,10 +1,10 @@
 package com.nicasia.rfc.usermanagement.user.service;
 
-import com.nicasia.rfc.enums.RoleName;
-import com.nicasia.rfc.enums.Status;
-import com.nicasia.rfc.exception.ClientException;
-import com.nicasia.rfc.exception.ResourceNotAvailableException;
-import com.nicasia.rfc.succesresponse.SuccessResponse;
+import com.nicasia.rfc.shared.enums.RoleName;
+import com.nicasia.rfc.shared.enums.Status;
+import com.nicasia.rfc.shared.exception.ClientException;
+import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
+import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import com.nicasia.rfc.usermanagement.department.service.DepartmentService;
 import com.nicasia.rfc.usermanagement.designation.service.DesignationService;
 import com.nicasia.rfc.usermanagement.user.dto.CreateUserRequest;

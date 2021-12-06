@@ -1,4 +1,4 @@
-package com.nicasia.rfc.abstracts;
+package com.nicasia.rfc.shared.abstracts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;

@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.department.repo;
 
-import com.nicasia.rfc.abstracts.BaseRepositoryImpl;
-import com.nicasia.rfc.enums.Status;
+import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
+import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.usermanagement.department.entity.Department;
 import com.nicasia.rfc.usermanagement.department.entity.QDepartment;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.nicasia.rfc.usermanagement.department.service;
 
-import com.nicasia.rfc.enums.Status;
+import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.usermanagement.department.dto.DepartmentRequest;
 import com.nicasia.rfc.usermanagement.department.dto.DepartmentResource;
 import com.nicasia.rfc.usermanagement.department.entity.Department;

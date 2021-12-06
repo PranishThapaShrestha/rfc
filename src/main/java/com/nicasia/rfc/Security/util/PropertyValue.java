@@ -1,4 +1,4 @@
-package com.nicasia.rfc.usermanagement.security.util;
+package com.nicasia.rfc.Security.util;
 
 public class PropertyValue {
 

@@ -1,6 +1,6 @@
 package com.nicasia.rfc.usermanagement.user.repo;
 
-import com.nicasia.rfc.enums.RoleName;
+import com.nicasia.rfc.shared.enums.RoleName;
 import com.nicasia.rfc.usermanagement.user.entity.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

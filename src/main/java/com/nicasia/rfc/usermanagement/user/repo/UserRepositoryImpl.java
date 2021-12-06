@@ -1,7 +1,7 @@
 package com.nicasia.rfc.usermanagement.user.repo;
 
-import com.nicasia.rfc.abstracts.BaseRepositoryImpl;
-import com.nicasia.rfc.enums.Status;
+import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
+import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.usermanagement.user.entity.QUser;
 import com.nicasia.rfc.usermanagement.user.entity.User;
 import com.querydsl.core.BooleanBuilder;

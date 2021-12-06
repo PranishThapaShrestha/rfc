@@ -1,4 +1,4 @@
-package com.nicasia.rfc.usermanagement.security.config;
+package com.nicasia.rfc.Security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
