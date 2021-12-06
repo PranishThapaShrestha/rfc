@@ -16,10 +16,7 @@ import com.nicasia.rfc.usermanagement.user.repo.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -65,7 +62,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode("password"));
         Roles roles = roleRepository.finByName(RoleName.MODERATOR).orElseThrow
                 (() -> new ResourceNotAvailableException("Role", "rolename", RoleName.MODERATOR.name()));
-        user.setRoles(new HashSet<>(Arrays.asList(roles)));
+        user.setRoles(new HashSet<>(Collections.singletonList(roles)));
         user.setStatus(Status.ACTIVE);
         userRepository.save(user);
     }
