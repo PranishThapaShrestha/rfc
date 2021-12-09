@@ -3,14 +3,14 @@ package com.nicasia.rfc.startup;
 import com.nicasia.rfc.shared.enums.RoleName;
 import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
-import com.nicasia.rfc.usermanagement.department.entity.Department;
-import com.nicasia.rfc.usermanagement.department.repo.DepartmentRepository;
-import com.nicasia.rfc.usermanagement.designation.entity.Designation;
-import com.nicasia.rfc.usermanagement.designation.repo.DesignationRepository;
-import com.nicasia.rfc.usermanagement.user.entity.Roles;
-import com.nicasia.rfc.usermanagement.user.entity.User;
-import com.nicasia.rfc.usermanagement.user.repo.RoleRepository;
-import com.nicasia.rfc.usermanagement.user.repo.UserRepository;
+import com.nicasia.rfc.core.usermanagement.department.entity.Department;
+import com.nicasia.rfc.core.usermanagement.department.repo.DepartmentRepository;
+import com.nicasia.rfc.core.usermanagement.designation.entity.Designation;
+import com.nicasia.rfc.core.usermanagement.designation.repo.DesignationRepository;
+import com.nicasia.rfc.core.usermanagement.user.entity.Roles;
+import com.nicasia.rfc.core.usermanagement.user.entity.User;
+import com.nicasia.rfc.core.usermanagement.user.repo.RoleRepository;
+import com.nicasia.rfc.core.usermanagement.user.repo.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,9 @@ public class DefaultUserCreator {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
 
-    public DefaultUserCreator(RoleRepository roleRepository, DepartmentRepository departmentRepository, DesignationRepository designationRepository, PasswordEncoder encoder, UserRepository userRepository) {
+    public DefaultUserCreator(RoleRepository roleRepository, DepartmentRepository departmentRepository,
+                              DesignationRepository designationRepository, UserRepository userRepository,
+                              PasswordEncoder encoder) {
         this.roleRepository = roleRepository;
         this.departmentRepository = departmentRepository;
         this.designationRepository = designationRepository;
@@ -53,7 +55,7 @@ public class DefaultUserCreator {
 
     @Transactional
     public void createUser() {
-        Roles roles = roleRepository.finByName(RoleName.SUPER_ADMIN)
+        Roles roles = roleRepository.findByName(RoleName.SUPER_ADMIN)
                 .orElseThrow(() -> new ResourceNotAvailableException("Roles", "roles", RoleName.SUPER_ADMIN.name()));
 
         User user = new User();
@@ -63,6 +65,7 @@ public class DefaultUserCreator {
         user.setRoles(new HashSet<>(Collections.singletonList(roles)));
         user.setDepartment(getDepartment());
         user.setDesignation(getDesignation());
+        user.setStatus(Status.ACTIVE);
         userRepository.save(user);
 
     }
