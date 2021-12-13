@@ -3,6 +3,7 @@ package com.nicasia.rfc.rfcdetail.service;
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
+import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.ApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
@@ -11,6 +12,8 @@ import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RfcDetailServiceImpl implements RfcDetailService {
 
@@ -18,31 +21,43 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     private final DepartmentService departmentService;
     private final UserService userService;
     private final RfcDetailRepository rfcDetailRepository;
+    private final RfcDetailConvert rfcDetailConvert;
 
-    public RfcDetailServiceImpl(DepartmentService departmentService, UserService userService, RfcDetailRepository rfcDetailRepository) {
+    public RfcDetailServiceImpl(DepartmentService departmentService, UserService userService, RfcDetailRepository rfcDetailRepository, RfcDetailConvert rfcDetailConvert) {
         this.departmentService = departmentService;
         this.userService = userService;
         this.rfcDetailRepository = rfcDetailRepository;
+        this.rfcDetailConvert = rfcDetailConvert;
     }
 
     @Override
-    public RfcDetail createRfcDetail(RfcDetailRequest rfcDetailRequest) {
+    public RfcDetailResponse createRfcDetail(RfcDetailRequest rfcDetailRequest) {
         RfcDetail rfcDetail = new RfcDetail();
         rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
         rfcDetail.setDeparmentname(departmentService.findById(rfcDetailRequest.getDepartmentId()));
         rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getSupportedBy()).get());
-        return getRfcDetail(rfcDetailRequest, rfcDetail);
+        rfcDetail.setStatus(Status.ACTIVE);
+        rfcDetail.setApprovalStatus(ApprovalStatus.PENDING);
+        rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());
+        rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
+        rfcDetail.setUnit(rfcDetail.getUnit());
+        rfcDetail.setSupportedby(rfcDetail.getSupportedby());
+        return rfcDetailConvert.convertOne(rfcDetailRepository.save(rfcDetail));
     }
 
     @Override
-    public RfcDetail updateRfcDetail(Long id, RfcDetailRequest rfcDetailRequest) {
+    public RfcDetailResponse updateRfcDetail(Long id, RfcDetailRequest rfcDetailRequest) {
 
         RfcDetail rfcDetail = rfcDetailRepository.findById(id).orElseThrow
                 (() -> new ResourceNotAvailableException("RfcDetails", "byId", id));
         rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
         rfcDetail.setDeparmentname(departmentService.findById(rfcDetailRequest.getDepartmentId()));
         rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getRequestedBy()).get());
-        return getRfcDetail(rfcDetailRequest, rfcDetail);
+        rfcDetail.setUnit(rfcDetailRequest.getUnit());
+        rfcDetail.setSupportedby(userService.findById(rfcDetailRequest.getSupportedBy()).get());
+        rfcDetailRepository.save(rfcDetail);
+        return rfcDetailConvert.convertOne(rfcDetail);
+
     }
 
     @NotNull
@@ -56,12 +71,24 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     }
 
     @Override
-    public RfcDetail removeRfcDetail(Long id) {
+    public RfcDetailResponse removeRfcDetail(Long id) {
         RfcDetail rfcDetail = rfcDetailRepository.findById(id).orElseThrow
                 (() -> new ResourceNotAvailableException("RfcDetail", "id", id));
         rfcDetail.setStatus(Status.INACTIVE);
-        return rfcDetailRepository.save(rfcDetail);
+
+        return rfcDetailConvert.convertOne(rfcDetailRepository.save(rfcDetail));
     }
 
+    @Override
+    public RfcDetail findById(Long id) {
+        return rfcDetailRepository.findById(id).orElseThrow
+                (() -> new ResourceNotAvailableException("RfcDetail", "id", id));
 
+    }
+
+    @Override
+    public List<RfcDetailResponse> retrieveAllRfcDetails() {
+        return rfcDetailConvert.convertAll((List<RfcDetail>) rfcDetailRepository.findAll());
+
+    }
 }

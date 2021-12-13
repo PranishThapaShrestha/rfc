@@ -1,14 +1,21 @@
 package com.nicasia.rfc.rfcdetail.service;
 
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
+import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
+
+import java.util.List;
 
 public interface RfcDetailService {
 
-    RfcDetail createRfcDetail(RfcDetailRequest rfcDetailRequest);
+    RfcDetailResponse createRfcDetail(RfcDetailRequest rfcDetailRequest);
 
-    RfcDetail updateRfcDetail(Long id, RfcDetailRequest rfcDetailRequest);
+    RfcDetailResponse updateRfcDetail(Long id, RfcDetailRequest rfcDetailRequest);
 
-    RfcDetail removeRfcDetail(Long id);
+    RfcDetailResponse removeRfcDetail(Long id);
+
+    List<RfcDetailResponse> retrieveAllRfcDetails();
+
+    RfcDetail findById(Long id);
 
 }

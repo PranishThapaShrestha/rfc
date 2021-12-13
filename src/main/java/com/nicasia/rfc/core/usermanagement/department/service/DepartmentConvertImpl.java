@@ -24,7 +24,7 @@ public class DepartmentConvertImpl implements DepartmentConvert {
 
     @Override
     public List<DepartmentResource> convertAll(List<Department> allDepartment) {
-        return allDepartment.stream().map(department -> convertDepartment(department)).collect(Collectors.toList());
+        return allDepartment.stream().map(this::convertDepartment).collect(Collectors.toList());
 
     }
 }
