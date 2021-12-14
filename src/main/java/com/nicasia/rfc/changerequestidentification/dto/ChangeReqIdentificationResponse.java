@@ -10,6 +10,7 @@ import lombok.Setter;
 public class ChangeReqIdentificationResponse {
 
     private Long changeRequest;
+    private Long rfcDetailId;
     private String changeTitle;
 }
 

@@ -24,7 +24,8 @@ public class ChangeRequestIdentificationConvertImpl implements ChangeRequestIden
     private ChangeReqIdentificationResponse convert(ChangeRequestIdentification changeRequestIdentification) {
         return
                 ChangeReqIdentificationResponse.builder()
-                        .changeRequest(changeRequestIdentification.getRfcdetail().getId())
+                        .changeRequest(changeRequestIdentification.getId())
+                        .rfcDetailId(changeRequestIdentification.getRfcdetail().getId())
                         .changeTitle(changeRequestIdentification.getChangerequestidentification())
                         .build();
     }
