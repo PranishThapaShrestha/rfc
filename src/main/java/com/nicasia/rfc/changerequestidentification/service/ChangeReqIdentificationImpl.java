@@ -6,6 +6,8 @@ import com.nicasia.rfc.changerequestidentification.entity.ChangeRequestIdentific
 import com.nicasia.rfc.changerequestidentification.repo.ChangeRequestIdentificationRepository;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
+import com.nicasia.rfc.shared.enums.Status;
+import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,21 +40,28 @@ public class ChangeReqIdentificationImpl implements ChangeReqIdentificationServi
                 ChangeRequestIdentification changeRequestIdentification = new ChangeRequestIdentification();
                 changeRequestIdentification.setRfcdetail(rfcDetail);
                 changeRequestIdentification.setChangerequestidentification(changeReqIdentificationRequest.getChangetitle());
+                changeRequestIdentification.setStatus(Status.ACTIVE);
                 changeRequestIdentification1.add(changeRequestIdentification);
             }
 
-                    changeRequestIdentifications = (List<ChangeRequestIdentification>) changeRequestIdentificationRepository.saveAll(changeRequestIdentification1);
+            changeRequestIdentifications = (List<ChangeRequestIdentification>) changeRequestIdentificationRepository.saveAll(changeRequestIdentification1);
         }
         return changeRequestIdentificationConvert.convertAll(changeRequestIdentifications);
     }
 
     @Override
     public ChangeReqIdentificationResponse updateCri(Long id, ChangeReqIdentificationRequest changeReqIdentificationRequest) {
-        return null;
+        ChangeRequestIdentification changeRequestIdentification = changeRequestIdentificationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotAvailableException("Request Identification", "id", id));
+        changeRequestIdentification.setChangerequestidentification(changeReqIdentificationRequest.getChangetitle());
+
+        return changeRequestIdentificationConvert.convertOne(changeRequestIdentificationRepository
+                .save(changeRequestIdentification));
     }
 
     @Override
     public List<ChangeReqIdentificationResponse> getAllCri() {
-        return null;
+        final Iterable<ChangeRequestIdentification> all = changeRequestIdentificationRepository.findAll();
+        return changeRequestIdentificationConvert.convertAll((List<ChangeRequestIdentification>) all);
     }
 }

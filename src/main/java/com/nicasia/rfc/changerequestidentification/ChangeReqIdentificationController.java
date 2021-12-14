@@ -3,10 +3,7 @@ package com.nicasia.rfc.changerequestidentification;
 import com.nicasia.rfc.changerequestidentification.dto.ChangeReqIdentificationRequest;
 import com.nicasia.rfc.changerequestidentification.dto.ChangeReqIdentificationResponse;
 import com.nicasia.rfc.changerequestidentification.service.ChangeReqIdentificationService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,7 +16,19 @@ public class ChangeReqIdentificationController {
     @PostMapping(value = "/{id}/createcri")
     public List<ChangeReqIdentificationResponse> addChangeReqIdentification(
             @PathVariable(value = "id") Long id, ChangeReqIdentificationRequest changeReqIdentificationRequest) {
-        return changeReqIdentificationService.createCri(id, (List<ChangeReqIdentificationRequest>) changeReqIdentificationRequest);
+        return changeReqIdentificationService
+                .createCri(id, (List<ChangeReqIdentificationRequest>) changeReqIdentificationRequest);
+    }
+
+    @PostMapping(value = "/{id}/update")
+    public ChangeReqIdentificationResponse updateChangeReqIdentification(
+            @PathVariable(value = "id") Long id, ChangeReqIdentificationRequest changeReqIdentificationRequest) {
+        return changeReqIdentificationService.updateCri(id, changeReqIdentificationRequest);
+    }
+
+    @GetMapping(value = "/all-changereqidentifications")
+    public List<ChangeReqIdentificationResponse> getAllChangeReqIdentification() {
+        return changeReqIdentificationService.getAllCri();
     }
 
 }
