@@ -10,6 +10,7 @@ import lombok.Setter;
 public class EvaluationResponse {
 
     private Long id;
+    private String rfcdetailsname;
     private String scope;
     private String timeline;
     private Long cost;

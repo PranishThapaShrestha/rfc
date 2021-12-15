@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/designation")
+@RequestMapping(value = "/api/v1")
 public class DesignationController {
 
     private final DesignationService designationService;
@@ -17,17 +17,17 @@ public class DesignationController {
         this.designationService = designationService;
     }
 
-    @GetMapping(value = "/all-designations")
+    @GetMapping(value = "/designations")
     public List<DesignationResource> getAllDesignations() {
         return designationService.findAllDesignation();
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/designations")
     public DesignationResource createDesignation(@RequestBody DesignationRequest designationRequest) {
         return designationService.addNewDesignation(designationRequest);
     }
 
-    @PostMapping(value = "/edit/{id}")
+    @PostMapping(value = "/designations/{id}/update")
     public DesignationResource updateDesignation(@PathVariable(value = "id") Long id,
                                                  @RequestBody DesignationRequest designationRequest) {
 

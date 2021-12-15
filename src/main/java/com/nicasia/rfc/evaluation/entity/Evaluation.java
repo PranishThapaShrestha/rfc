@@ -5,19 +5,16 @@ import com.nicasia.rfc.shared.abstracts.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 public class Evaluation extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "rfcdetails")
-    private RfcDetail rfcDetail;
+    @OneToOne
+    @JoinColumn(name = "rfcdetail_id")
+    private RfcDetail rfcdetail;
 
     @Column(name = "scope")
     private String scope;
@@ -31,11 +28,11 @@ public class Evaluation extends BaseEntity {
     @Column(name = "costresource")
     private String costresource;
 
-    @Column(name = "risk-basedon-cia")
+    @Column(name = "risk_basedon_cia")
     private String riskbasedoncia;
 
-    @Column(name ="evaluatorPriority")
-    private EvaluatorPriority evaluatorPriority;
+    @Column(name = "evaluatorPriority")
+    private String evaluatorPriority;
 
     @Column(name = "alternativesandrecommendation")
     private String alternativesandrecommendation;

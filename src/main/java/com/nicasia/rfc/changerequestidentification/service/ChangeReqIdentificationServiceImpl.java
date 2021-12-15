@@ -15,15 +15,15 @@ import java.util.List;
 
 
 @Service
-public class ChangeReqIdentificationImpl implements ChangeReqIdentificationService {
+public class ChangeReqIdentificationServiceImpl implements ChangeReqIdentificationService {
 
     private final RfcDetailService rfcDetailService;
     private final ChangeRequestIdentificationRepository changeRequestIdentificationRepository;
     private final ChangeRequestIdentificationConvert changeRequestIdentificationConvert;
 
-    public ChangeReqIdentificationImpl(RfcDetailService rfcDetailService,
-                                       ChangeRequestIdentificationRepository changeRequestIdentificationRepository,
-                                       ChangeRequestIdentificationConvert changeRequestIdentificationConvert) {
+    public ChangeReqIdentificationServiceImpl(RfcDetailService rfcDetailService,
+                                              ChangeRequestIdentificationRepository changeRequestIdentificationRepository,
+                                              ChangeRequestIdentificationConvert changeRequestIdentificationConvert) {
         this.rfcDetailService = rfcDetailService;
         this.changeRequestIdentificationRepository = changeRequestIdentificationRepository;
         this.changeRequestIdentificationConvert = changeRequestIdentificationConvert;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/changerequestdetails")
+@RequestMapping(value = "/api/v1")
 public class ChangeRequestDetailsController {
 
     private final ChangeRequestDetailsService changeRequestDetailsService;
@@ -17,20 +17,19 @@ public class ChangeRequestDetailsController {
         this.changeRequestDetailsService = changeRequestDetailsService;
     }
 
-    @PostMapping(value = "/{id}/create-crd")
+    @PostMapping(value = "/rfcdetails/{id}/changerequestdetails")
     public ChangeRequestDetailsResponse createChangeReqDetails(
             @PathVariable(value = "id") Long id,
             @RequestBody ChangeRequestDetailsRequest changeRequestDetailsRequest) {
-
         return changeRequestDetailsService.createChangeReqDetails(id, changeRequestDetailsRequest);
     }
 
-    @GetMapping(value = "/all-crd")
+    @GetMapping(value = "/changerequestdetails")
     public List<ChangeRequestDetailsResponse> fetchAllChangeReqDetails() {
         return changeRequestDetailsService.getAllChangeReqDetails();
     }
 
-    @PostMapping(value = "/{id}/update-crd")
+    @PostMapping(value = "/changerequestdetails/{id}/update")
     public ChangeRequestDetailsResponse updateChangeReqDetails(
             @PathVariable(value = "id") Long id,
             @RequestBody ChangeRequestDetailsRequest changeRequestDetailsRequest) {

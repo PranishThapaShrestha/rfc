@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/department")
+@RequestMapping(value = "/api/v1")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -18,22 +18,22 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/departments")
     public DepartmentResource createDepartment(@RequestBody DepartmentRequest departmentRequest) {
         return departmentService.addNewDepartment(departmentRequest);
     }
 
-    @GetMapping(value = "/alldepartments")
+    @GetMapping(value = "/departments")
     public List<DepartmentResource> getAllDepartments() {
         return departmentService.getAllDepartments();
     }
 
-    @PutMapping(value = "/{department_id}/remove")
-    public DepartmentResource removeDepartment(@PathVariable(value = "depatment_id") Long departmentId) {
+    @PostMapping(value = "/departments/{id}/remove")
+    public DepartmentResource removeDepartment(@PathVariable(value = "id") Long departmentId) {
         return departmentService.removeDepartment(departmentId);
     }
 
-    @PostMapping(value = "{department_id}/{status}")
+    @PostMapping(value = "/departments/{id}/{status}/update")
     public DepartmentResource updateDepartmentStatus(@PathVariable(value = "department_id") Long departmentId,
                                                      @PathVariable(value = "status") Status status) {
         return departmentService.updateDepartmentStatus(departmentId, status);

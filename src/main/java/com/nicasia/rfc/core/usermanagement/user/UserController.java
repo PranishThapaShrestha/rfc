@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1")
 public class UserController {
 
     @Autowired
@@ -22,20 +22,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/add-user")
+    @PostMapping(value = "/users")
     public SuccessResponse addUser(@RequestBody CreateUserRequest createUserRequest) {
         return userService.createUser(createUserRequest);
     }
 
-    @GetMapping(value = "/all-users")
+    @GetMapping(value = "/users")
     public List<UserResource> getAllUserResource() {
         return userService.getAllUsers();
     }
 
-    @GetMapping(value = "/{user-id}")
+    @GetMapping(value = "/users/{id}")
     public UserResource getUserById(@PathVariable(value = "user-id") Long id) {
         return userService.findUserResourceById(id);
     }
-
 
 }

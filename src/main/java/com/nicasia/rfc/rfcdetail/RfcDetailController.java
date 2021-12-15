@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/rfcdetails")
+@RequestMapping(value = "/api/v1")
 public class RfcDetailController {
 
     private final RfcDetailService rfcDetailService;
@@ -17,22 +17,22 @@ public class RfcDetailController {
         this.rfcDetailService = rfcDetailService;
     }
 
-    @PostMapping(value = "/addrfc")
+    @PostMapping(value = "/rfcdetails")
     public RfcDetailResponse createRfcDetails(@RequestBody RfcDetailRequest rfcDetailRequest) {
         return rfcDetailService.createRfcDetail(rfcDetailRequest);
     }
 
-    @PostMapping(value = "/{id}/update")
+    @PostMapping(value = "/rfcdetails/{id}/update")
     public RfcDetailResponse updateRfcDetails(@PathVariable(value = "id") Long id, RfcDetailRequest rfcDetailRequest) {
         return rfcDetailService.updateRfcDetail(id, rfcDetailRequest);
     }
 
-    @PostMapping(value = "/{id}/remove")
+    @PostMapping(value = "/rfcdetails/{id}/remove")
     public RfcDetailResponse removeById(@PathVariable(value = "id") Long id) {
         return rfcDetailService.removeRfcDetail(id);
     }
 
-    @GetMapping(value = "/all-rfcdetails")
+    @GetMapping(value = "/rfcdetails")
     public List<RfcDetailResponse> getAll() {
         return rfcDetailService.retrieveAllRfcDetails();
     }

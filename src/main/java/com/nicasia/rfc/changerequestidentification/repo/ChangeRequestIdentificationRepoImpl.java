@@ -15,10 +15,8 @@ public class ChangeRequestIdentificationRepoImpl extends BaseRepositoryImpl<Chan
 
     @Lazy
     @Autowired
-    public void setRepository(ChangeRequestIdentificationRepository changeRequestIdentificationRepository){
-        this.repository=changeRequestIdentificationRepository;
+    public void setRepository(ChangeRequestIdentificationRepository changeRequestIdentificationRepository) {
+        this.repository = changeRequestIdentificationRepository;
     }
-
-
 
 }

@@ -30,6 +30,7 @@ public class ChangeRequestDetailsConvertImpl implements ChangeRequestDetailsConv
 
     private ChangeRequestDetailsResponse convertHelper(ChangeRequestDetails changeRequestDetails) {
         return ChangeRequestDetailsResponse.builder()
+                .id(changeRequestDetails.getRfcDetail().getId())
                 .description(changeRequestDetails.getDescription())
                 .justification(changeRequestDetails.getJustification())
                 .status(Status.ACTIVE.name())
