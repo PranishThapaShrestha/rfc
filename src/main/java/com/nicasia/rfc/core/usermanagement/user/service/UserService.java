@@ -17,9 +17,11 @@ public interface UserService {
 
     UserResource findUserResourceById(Long id);
 
-    Optional<User> findById(Long id);
+    List<User> findAllUserByIdsIn(List<Long> ids);
 
+    User findById(Long id);
 
     Optional<User> findByName(String name);
 
+    SuccessResponse updateUser(Long id,CreateUserRequest createUserRequest);
 }

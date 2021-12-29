@@ -1,6 +1,5 @@
 package com.nicasia.rfc.core.usermanagement.department;
 
-import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.core.usermanagement.department.dto.DepartmentRequest;
 import com.nicasia.rfc.core.usermanagement.department.dto.DepartmentResource;
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
@@ -19,7 +18,7 @@ public class DepartmentController {
     }
 
     @PostMapping(value = "/departments")
-    public DepartmentResource createDepartment(@RequestBody DepartmentRequest departmentRequest) {
+    public DepartmentResource addDepartment(@RequestBody DepartmentRequest departmentRequest) {
         return departmentService.addNewDepartment(departmentRequest);
     }
 
@@ -34,8 +33,15 @@ public class DepartmentController {
     }
 
     @PostMapping(value = "/departments/{id}/{status}/update")
-    public DepartmentResource updateDepartmentStatus(@PathVariable(value = "department_id") Long departmentId,
-                                                     @PathVariable(value = "status") Status status) {
-        return departmentService.updateDepartmentStatus(departmentId, status);
+    public DepartmentResource updateDepartmentStatus(@PathVariable(value = "id") Long id,
+                                                     @PathVariable String status) {
+        return departmentService.updateDepartmentStatus(id, status);
     }
+
+    @PostMapping(value = "/departments/{id}/update")
+    public DepartmentResource updateDepartmentDetail(@PathVariable(value = "id") Long id,
+                                                     @RequestBody DepartmentRequest departmentRequest) {
+        return departmentService.updateDepartmentDetail(id, departmentRequest);
+    }
+
 }

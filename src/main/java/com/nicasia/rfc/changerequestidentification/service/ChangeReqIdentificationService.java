@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ChangeReqIdentificationService {
 
-    List<ChangeReqIdentificationResponse> createCri(Long id,List<ChangeReqIdentificationRequest> changeReqIdentificationRequests);
+    List<ChangeReqIdentificationResponse> doChangeRequestIdentification(Long id,List<ChangeReqIdentificationRequest> changeReqIdentificationRequests);
 
     ChangeReqIdentificationResponse updateCri(Long id,ChangeReqIdentificationRequest changeReqIdentificationRequest);
 

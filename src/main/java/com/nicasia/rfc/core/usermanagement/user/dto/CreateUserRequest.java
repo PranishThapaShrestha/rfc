@@ -13,5 +13,6 @@ public class CreateUserRequest {
     private String username;
     private Long departmentId;
     private Long designationId;
+    private String email;
 
 }

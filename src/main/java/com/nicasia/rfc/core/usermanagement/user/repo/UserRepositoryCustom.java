@@ -14,4 +14,6 @@ public interface UserRepositoryCustom extends BaseRepositoryCustom<User> {
     List<User> findAllUserBasedOnStatus(Status status);
 
     List<User> searchUser(String userName);
+
+    List<User> findAllUserByIds(List<Long> userIds);
 }

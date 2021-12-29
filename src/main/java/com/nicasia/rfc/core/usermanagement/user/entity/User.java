@@ -18,12 +18,15 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(nullable = false)
     private String password;

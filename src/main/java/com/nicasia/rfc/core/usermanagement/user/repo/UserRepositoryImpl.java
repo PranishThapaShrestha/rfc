@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserRepository> implements UserRepositoryCustom {
 
-    QUser user = QUser.user;
+    QUser quser = QUser.user;
 
     public UserRepositoryImpl() {
 
@@ -29,12 +29,12 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserRepository>
 
     @Override
     public Optional<User> findByUserName(String userName) {
-        return repository.findOne(user.username.eq(userName).and(user.status.eq(Status.ACTIVE)));
+        return repository.findOne(quser.username.eq(userName).and(quser.status.eq(Status.ACTIVE)));
     }
 
     @Override
     public List<User> findAllUserBasedOnStatus(Status status) {
-        return (List<User>) repository.findAll(user.status.eq(status));
+        return (List<User>) repository.findAll(quser.status.eq(status));
     }
 
     @Override
@@ -42,10 +42,15 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserRepository>
 
         BooleanBuilder where = new BooleanBuilder();
         if (userName != null && !userName.isEmpty()) {
-            where.and(user.username.eq(userName));
+            where.and(quser.username.eq(userName));
         }
-        where.and(user.status.eq(Status.ACTIVE));
+        where.and(quser.status.eq(Status.ACTIVE));
 
         return (List<User>) repository.findAll(where);
+    }
+
+    @Override
+    public List<User> findAllUserByIds(List<Long> userIds) {
+        return (List<User>) repository.findAll(quser.id.in(userIds));
     }
 }

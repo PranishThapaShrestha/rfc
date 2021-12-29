@@ -29,9 +29,6 @@ public class RfcDetail extends BaseEntity {
     @JoinColumn(name = "department_name")
     private Department deparmentname;
 
-    @ManyToOne
-    @JoinColumn(name = "supported_by")
-    private User supportedby;
 
     @Column(name = "unit")
     private String unit;

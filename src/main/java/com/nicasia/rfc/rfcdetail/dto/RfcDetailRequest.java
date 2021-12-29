@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +19,7 @@ public class RfcDetailRequest {
     private String unit;
     private Date requestDate;
     private Date dateDecided;
+    private List<Long> supportedByUserIds;
+    private List<Long> approvedByUserIds;
+    private String preApprovalMemoCode;
 }

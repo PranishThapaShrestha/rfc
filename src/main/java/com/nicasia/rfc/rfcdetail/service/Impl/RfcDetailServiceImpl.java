@@ -1,4 +1,4 @@
-package com.nicasia.rfc.rfcdetail.service;
+package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
@@ -7,8 +7,13 @@ import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.ApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
+import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
+import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
+import com.nicasia.rfc.security.jwt.AuthUtil;
 import com.nicasia.rfc.shared.enums.Status;
+import com.nicasia.rfc.shared.exception.ClientException;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
+import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +36,30 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     }
 
     @Override
-    public RfcDetailResponse createRfcDetail(RfcDetailRequest rfcDetailRequest) {
+    public SuccessResponse createPreApprovalRfcDetail(RfcDetailRequest rfcDetailRequest) {
+
+        if (rfcDetailRequest.getApprovedByUserIds().size() > 1) {
+            throw new ClientException("Dear user, multiple approver is not allowed");
+        }
         RfcDetail rfcDetail = new RfcDetail();
         rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
-        rfcDetail.setDeparmentname(departmentService.findById(rfcDetailRequest.getDepartmentId()));
-        rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getSupportedBy()).get());
+        rfcDetail.setDeparmentname(AuthUtil.getCurrentUser().getDepartment());
+        rfcDetail.setRequestedby(AuthUtil.getCurrentUser());
         rfcDetail.setStatus(Status.ACTIVE);
         rfcDetail.setApprovalStatus(ApprovalStatus.PENDING);
         rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());
         rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
         rfcDetail.setUnit(rfcDetail.getUnit());
-        rfcDetail.setSupportedby(rfcDetail.getSupportedby());
-        return rfcDetailConvert.convertOne(rfcDetailRepository.save(rfcDetail));
+        if (rfcDetailRequest.getSupportedByUserIds().size() == 0) {
+            rfcDetail.setApprovalStatus(ApprovalStatus.SUPPORTED);
+        } else {
+            rfcDetail.setApprovalStatus(ApprovalStatus.REQUESTED);
+        }
+        RfcDetail rfcDetail1=rfcDetailRepository.save(rfcDetail);
+
+
+        return null;
+
     }
 
     @Override
@@ -52,9 +69,8 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                 (() -> new ResourceNotAvailableException("RfcDetails", "byId", id));
         rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
         rfcDetail.setDeparmentname(departmentService.findById(rfcDetailRequest.getDepartmentId()));
-        rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getRequestedBy()).get());
+        rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getRequestedBy()));
         rfcDetail.setUnit(rfcDetailRequest.getUnit());
-        rfcDetail.setSupportedby(userService.findById(rfcDetailRequest.getSupportedBy()).get());
         rfcDetailRepository.save(rfcDetail);
         return rfcDetailConvert.convertOne(rfcDetail);
 
@@ -62,7 +78,6 @@ public class RfcDetailServiceImpl implements RfcDetailService {
 
     @NotNull
     private RfcDetail getRfcDetail(RfcDetailRequest rfcDetailRequest, RfcDetail rfcDetail) {
-        rfcDetail.setSupportedby(userService.findById(rfcDetailRequest.getSupportedBy()).get());
         rfcDetail.setUnit(rfcDetailRequest.getUnit());
         rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
         rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());

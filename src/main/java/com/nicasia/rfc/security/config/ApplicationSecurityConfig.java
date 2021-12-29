@@ -78,7 +78,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/home", "/index")
                 .permitAll()
 
-                .antMatchers("/api/v1/authenticate/**")
+                .antMatchers("/api/v1/**")
                 .permitAll()
 
                 .antMatchers("/api/auth/**")

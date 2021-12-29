@@ -1,7 +1,8 @@
-package com.nicasia.rfc.rfcdetail.service;
+package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
+import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class RfcDetailConvertImpl implements RfcDetailConvert {
                 .approvalStatus(rfcDetail.getApprovalStatus().name())
                 .datedecided(rfcDetail.getDatedecided())
                 .status(rfcDetail.getStatus().name())
-                .supportedby(rfcDetail.getSupportedby().getName())
+//                .supportedby(rfcDetail.getSupportedby().getName())
                 .projectname(rfcDetail.getProjectname())
                 .unit(rfcDetail.getUnit())
                 .build();

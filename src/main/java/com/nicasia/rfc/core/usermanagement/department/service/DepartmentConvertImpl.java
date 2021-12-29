@@ -19,6 +19,7 @@ public class DepartmentConvertImpl implements DepartmentConvert {
                 .id(department.getId())
                 .name(department.getDeptname())
                 .code(department.getDeptcode())
+                .status(department.getStatus().name())
                 .created(department.getCreatedAt()).build();
     }
 

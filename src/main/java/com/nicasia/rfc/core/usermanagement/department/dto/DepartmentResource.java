@@ -14,4 +14,5 @@ public class DepartmentResource {
     private String name;
     private String code;
     private Date created;
+    private String status;
 }

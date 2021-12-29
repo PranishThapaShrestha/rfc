@@ -33,8 +33,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{id}")
-    public UserResource getUserById(@PathVariable(value = "user-id") Long id) {
+    public UserResource getUserById(@PathVariable(value = "user_id") Long id) {
         return userService.findUserResourceById(id);
+    }
+
+    @PostMapping(value = "/users/{id}/update")
+    public SuccessResponse updateUser(
+            @PathVariable(value = "id") Long id,@RequestBody CreateUserRequest createUserRequest){
+        return userService.updateUser(id, createUserRequest);
     }
 
 }

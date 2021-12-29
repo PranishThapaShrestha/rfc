@@ -22,9 +22,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department findById(Long departmentId) {
-        return departmentRepository.findById(departmentId).orElseThrow(
-                () -> new ResourceNotAvailableException("Department detail", "departmentId", departmentId)
+    public Department findById(Long id) {
+        return departmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotAvailableException("Department detail", "departmentId", id)
         );
     }
 
@@ -47,9 +47,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResource removeDepartment(Long departmentId) {
-        final Department department = departmentRepository.findById(departmentId).orElseThrow(
-                () -> new ResourceNotAvailableException("Resource you are trying to delete", "departmentId", departmentId));
+    public DepartmentResource removeDepartment(Long id) {
+        final Department department = departmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotAvailableException("Resource you are trying to delete ::", "departmentId", id));
         department.setStatus(Status.DELETED);
         return departmentConvert.convert(departmentRepository.save(department));
     }
@@ -62,13 +62,23 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentResources;
     }
 
-    @Override
-    public DepartmentResource updateDepartmentStatus(Long departmentId, Status status) {
 
-        Department department = departmentRepository.findById(departmentId).orElseThrow(
-                () -> new ResourceNotAvailableException("Department you are looking of", "departmentId", departmentId));
-        department.setStatus(Status.valueOf(String.valueOf(status)));
+    @Override
+    public DepartmentResource updateDepartmentStatus(Long id, String status) {
+
+        Department department = departmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotAvailableException("Department you are looking of", "departmentId", id));
+        department.setStatus(Status.valueOf(status));
         final Department department1 = departmentRepository.save(department);
         return departmentConvert.convert(department1);
+    }
+
+    @Override
+    public DepartmentResource updateDepartmentDetail(Long id, DepartmentRequest departmentRequest) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotAvailableException("Department of id ::", "id", id));
+        department.setDeptcode(departmentRequest.getCode());
+        department.setDeptname(departmentRequest.getName());
+        return departmentConvert.convert(departmentRepository.save(department));
     }
 }

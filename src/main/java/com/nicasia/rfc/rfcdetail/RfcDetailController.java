@@ -18,8 +18,9 @@ public class RfcDetailController {
     }
 
     @PostMapping(value = "/rfcdetails")
-    public RfcDetailResponse createRfcDetails(@RequestBody RfcDetailRequest rfcDetailRequest) {
-        return rfcDetailService.createRfcDetail(rfcDetailRequest);
+    public RfcDetailResponse createRfccreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
+    return null;
+        //        return rfcDetailService.createPreApprovalRfcDetail(rfcDetailRequest);
     }
 
     @PostMapping(value = "/rfcdetails/{id}/update")

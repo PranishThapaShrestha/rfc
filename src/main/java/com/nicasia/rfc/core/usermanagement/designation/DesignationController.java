@@ -30,7 +30,6 @@ public class DesignationController {
     @PostMapping(value = "/designations/{id}/update")
     public DesignationResource updateDesignation(@PathVariable(value = "id") Long id,
                                                  @RequestBody DesignationRequest designationRequest) {
-
         return designationService.updateDesignation(id, designationRequest);
     }
 

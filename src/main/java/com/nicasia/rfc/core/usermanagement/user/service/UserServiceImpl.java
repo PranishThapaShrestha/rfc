@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
     private void addUserIfNotPresent(User user, CreateUserRequest createUserRequest) {
         user.setName(createUserRequest.getName());
         user.setUsername(createUserRequest.getUsername());
+        user.setEmail(createUserRequest.getEmail().trim());
         user.setDepartment(departmentService.findById(createUserRequest.getDepartmentId()));
         user.setDesignation(designationService.findById(createUserRequest.getDesignationId()));
         user.setPassword(passwordEncoder.encode("password"));
@@ -76,13 +77,19 @@ public class UserServiceImpl implements UserService {
     public UserResource findUserResourceById(Long id) {
         final User user = userRepository.findById(id).orElseThrow
                 (() -> new ResourceNotAvailableException("User", "id", id));
-
         return userConvert.convertToResource(user);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public List<User> findAllUserByIdsIn(List<Long> ids) {
+        return userRepository.findAllUserByIds(ids);
+
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotAvailableException("user of id ::", "id", id));
     }
 
     @Override
@@ -90,6 +97,63 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserName(name);
     }
 
+    @Override
+    public SuccessResponse updateUser(Long id, CreateUserRequest createUserRequest) {
 
+        Roles roles = roleRepository.findByName(RoleName.MODERATOR)
+                .orElseThrow(() -> new ResourceNotAvailableException("Roles with name ::", "id", RoleName.MODERATOR));
+
+        Optional<User> user = userRepository.findByUserName(createUserRequest.getUsername().trim());
+        if (user.isPresent() && !user.get().getId().equals(id)) {
+            throw new ClientException("Client already exists");
+        }
+        User users = userRepository.findById(id).orElseThrow(() -> new ResourceNotAvailableException("User of id::", "id", id));
+        users.setName(createUserRequest.getName());
+        users.setUsername(createUserRequest.getUsername());
+        users.setPassword(passwordEncoder.encode("123456"));
+        users.setStatus(Status.ACTIVE);
+        users.setRoles(new HashSet<>(Arrays.asList(roles)));
+        users.setDesignation(designationService.findById(createUserRequest.getDepartmentId()));
+        users.setDepartment(departmentService.findById(createUserRequest.getDepartmentId()));
+        userRepository.save(users);
+        return SuccessResponse.builder().successMessage("user successfully updated").build();
+
+
+    }
 }
+
+
+//        Optional<User> user = userRepository.findByUserName(createUserRequest.getUsername().trim());
+//        if (user.isPresent() && !user.get().getId().equals(id)) {
+//            throw new ClientException("Client already exist");
+//        }
+//        User user1 = userRepository.findById(id).orElseThrow(
+//                () -> new ResourceNotAvailableException("User with id ::", "id", id));
+//        user1.setName(createUserRequest.getName());
+//        user1.setUsername(createUserRequest.getUsername());
+//        user1.setDepartment(departmentService.findById(createUserRequest.getDepartmentId()));
+//        user1.setDesignation(designationService.findById(createUserRequest.getDesignationId()));
+//        user1.setPassword(passwordEncoder.encode("12345"));
+//        user1.setStatus(Status.ACTIVE);
+//        Roles roles = roleRepository.findByName(RoleName.MODERATOR)
+//                .orElseThrow(() -> new ResourceNotAvailableException("Roles of name ::", "roles", RoleName.MODERATOR));
+//
+//        user1.setRoles(new HashSet<>(Arrays.asList(roles)));
+//        userRepository.save(user1);
+//
+//        return SuccessResponse.builder().successMessage("Update has been done").build();
+//        }
+//}
+
+
+//    @Override
+//    public SuccessResponse updateUser(Long id, CreateUserRequest createUserRequest) {
+//        Optional<User> user = userRepository.findByUserName(createUserRequest.getUsername().trim());
+//        if (user.isPresent() && !Objects.equals(user.get().getId(), id)) {
+//            throw new ClientException("client already exist");
+//        }
+//        addUserIfNotPresent( findById(id), createUserRequest);
+//        return SuccessResponse.builder().successMessage("Successfully updated the user").build();
+//    }
+//}
 

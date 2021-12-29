@@ -17,7 +17,7 @@ public class ChangeReqIdentificationController {
     public List<ChangeReqIdentificationResponse> addChangeReqIdentification(
             @PathVariable(value = "id") Long id, ChangeReqIdentificationRequest changeReqIdentificationRequest) {
         return changeReqIdentificationService
-                .createCri(id, (List<ChangeReqIdentificationRequest>) changeReqIdentificationRequest);
+                .doChangeRequestIdentification(id, (List<ChangeReqIdentificationRequest>) changeReqIdentificationRequest);
     }
 
     @PostMapping(value = "/changerequestidentifications/{id}/update")

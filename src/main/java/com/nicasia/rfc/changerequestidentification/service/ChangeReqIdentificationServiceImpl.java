@@ -30,7 +30,7 @@ public class ChangeReqIdentificationServiceImpl implements ChangeReqIdentificati
     }
 
     @Override
-    public List<ChangeReqIdentificationResponse> createCri(Long id, List<ChangeReqIdentificationRequest> changeReqIdentificationRequests) {
+    public List<ChangeReqIdentificationResponse> doChangeRequestIdentification(Long id, List<ChangeReqIdentificationRequest> changeReqIdentificationRequests) {
         RfcDetail rfcDetail = rfcDetailService.findById(id);
         List<ChangeRequestIdentification> changeRequestIdentifications = null;
         if (rfcDetail != null) {
