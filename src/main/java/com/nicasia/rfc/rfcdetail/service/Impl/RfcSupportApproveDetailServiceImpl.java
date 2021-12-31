@@ -135,7 +135,9 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
 
     }
 
-
+    //
+//
+//
 //    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails){
 //
 //        if(rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
