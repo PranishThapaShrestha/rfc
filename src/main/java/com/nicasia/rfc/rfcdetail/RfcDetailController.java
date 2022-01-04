@@ -3,6 +3,7 @@ package com.nicasia.rfc.rfcdetail;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
+import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +19,13 @@ public class RfcDetailController {
     }
 
     @PostMapping(value = "/rfcdetails")
-    public RfcDetailResponse createRfccreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
-    return null;
-        //        return rfcDetailService.createPreApprovalRfcDetail(rfcDetailRequest);
+    public SuccessResponse createRfccreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
+        return rfcDetailService.createPreApprovalRfcDetail(rfcDetailRequest);
     }
+
+
+
+    // todo below controllers are to be confirmed
 
     @PostMapping(value = "/rfcdetails/{id}/update")
     public RfcDetailResponse updateRfcDetails(@PathVariable(value = "id") Long id, RfcDetailRequest rfcDetailRequest) {

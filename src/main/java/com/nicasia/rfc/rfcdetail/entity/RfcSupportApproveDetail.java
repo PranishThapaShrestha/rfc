@@ -26,6 +26,9 @@ public class RfcSupportApproveDetail extends BaseEntity {
     @Column(name = "requested_for_type")
     private RequestedForType requestedForType;
 
+    @Column(name = "request_type")
+    private RequestType requestType;
+
     private Status status;
 
 }

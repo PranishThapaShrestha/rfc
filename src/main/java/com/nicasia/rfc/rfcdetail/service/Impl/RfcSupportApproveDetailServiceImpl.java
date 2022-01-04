@@ -3,6 +3,7 @@ package com.nicasia.rfc.rfcdetail.service.Impl;
 import com.nicasia.rfc.core.email.Mail;
 import com.nicasia.rfc.core.usermanagement.user.entity.User;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
+import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RequestedForType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
@@ -33,7 +34,7 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
     public void saveSupportApproveDetails(List<Long> approvedByUserIds,
                                           List<Long> supportedByUserIds,
                                           RfcDetail rfcDetail,
-                                          RequestedForType requestedForType) {
+                                          RequestType requestType) {
 
         List<Long> users = new ArrayList<>();
         users.addAll(supportedByUserIds);
@@ -44,83 +45,76 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
         List<RfcSupportApproveDetail> rfcSupportApproveDetails = new ArrayList<>();
 
         rfcSupportApproveDetails.addAll(approvedByUserIds.stream().map(aLong ->
-                saveApproverSupporter(aLong, userMap, rfcDetail, RequestedForType.APPROVE)).collect(Collectors.toList()));
+                saveApproverSupporter(aLong, userMap, rfcDetail,requestType,
+                        RequestedForType.APPROVE)).collect(Collectors.toList()));
 
         if (supportedByUserIds.size() > 0) {
             rfcSupportApproveDetails.addAll(supportedByUserIds.stream().map(aLong ->
-                    saveApproverSupporter(aLong, userMap, rfcDetail, RequestedForType.SUPPORT)).collect(Collectors.toList()));
+                    saveApproverSupporter(aLong, userMap, rfcDetail,requestType,
+                            RequestedForType.SUPPORT)).collect(Collectors.toList()));
         }
 
         rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser()
-                .getId(),userMap,rfcDetail,RequestedForType.CREATE));
+                .getId(), userMap, rfcDetail,requestType,
+                RequestedForType.CREATE));
 
         rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
+    }
 
-
-
-//        List<Long> users = new ArrayList<>();
-//        users.addAll(approvedByUserIds);
-//        users.addAll(supportedByUserIds);
-//        Map<Long, User> userMap = userService.findAllUserByIdsIn(users).stream().collect(Collectors
-//                .toMap(user -> user.getId(), user -> user));
-//        List<RfcSupportApproveDetail> rfcSupportApproveDetails = new ArrayList<>();
+//    @Override
+//    public void forward(List<Long> approversIds, List<Long> supportersIds, RfcDetail rfcDetail, RequestType requestType) {
 //
-//        rfcSupportApproveDetails.addAll(approvedByUserIds.stream()
-//                .map(aLong -> saveApproverSupporter(aLong, userMap, rfcDetail
-//                        , RequestedForType.APPROVE)).collect(Collectors.toList()));
+//        List<Long> userIds=new ArrayList<>();
+//        userIds.addAll(approversIds);
+//        userIds.addAll(supportersIds);
+//        Map<Long, User> userMap1=userService.findAllUserByIdsIn(userIds).stream()
+//                .collect(Collectors.toMap(user -> user.getId(),o -> o));
 //
-//        if (supportedByUserIds.size() > 0) {
-//            rfcSupportApproveDetails.addAll(supportedByUserIds.stream()
-//                    .map(aLong -> saveApproverSupporter(aLong, userMap, rfcDetail,
-//                            RequestedForType.SUPPORT)).collect(Collectors.toList()));
-//        }
-//        rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser().getId()
-//                , userMap
-//                , rfcDetail
-//                , RequestedForType.CREATE));
+//        List<RfcSupportApproveDetail> rfcSupportApproveDetails=new ArrayList<>();
+//        rfcSupportApproveDetails.addAll(approversIds.stream().map(aLong -> saveApproverSupporter(aLong,
+//                userMap1,rfcDetail,requestType,RequestedForType.APPROVE)).collect(Collectors.toList()));
+//
+//        rfcSupportApproveDetails.addAll(supportersIds.stream().map(aLong -> saveApproverSupporter(aLong,
+//                userMap1,rfcDetail,requestType,RequestedForType.APPROVE)).collect(Collectors.toList()));
+//
+//        rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser()
+//                .getId(),userMap1,rfcDetail,requestType,RequestedForType.CREATE));
 //
 //        rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
-
-    }
+//
+//    }
 
     public RfcSupportApproveDetail saveApproverSupporter(Long userIds,
                                                          Map<Long, User> userMap,
                                                          RfcDetail rfcDetail,
+                                                         RequestType requestType,
                                                          RequestedForType requestedForType) {
         RfcSupportApproveDetail rfcSupportApproveDetail = new RfcSupportApproveDetail();
         rfcSupportApproveDetail.setRequestedForType(requestedForType);
+        rfcSupportApproveDetail.setRequestType(requestType);
         rfcSupportApproveDetail.setStatus(Status.ACTIVE);
         rfcSupportApproveDetail.setRfcDetail(rfcDetail);
         rfcSupportApproveDetail.setUser(userMap.get(userIds));
         return rfcSupportApproveDetailRepository.save(rfcSupportApproveDetail);
     }
 
-//    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails){
-//        rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
-//                .getRequestedForType().equals(RequestedForType.SUPPORT))
-//
-//        return null;
-//    }
+    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails) {
 
+        if (rfcSupportApproveDetails.stream().anyMatch(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                .getRequestedForType().equals(RequestedForType.SUPPORT))) {
+            rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> !rfcSupportApproveDetail
+                    .getRequestedForType().equals(RequestedForType.APPROVE));
+        }
+        RfcSupportApproveDetail rfcSupportApproveDetail = rfcSupportApproveDetails.stream()
+                .filter(rfcSupportApproveDetail1 -> rfcSupportApproveDetail1
+                        .getRequestedForType().equals(RequestedForType.CREATE)).findFirst().get();
 
+        return rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> !rfcSupportApproveDetail1
+                .getRequestedForType().equals(RequestedForType.CREATE)).map(rfcSupportApproveDetail1 ->
+                ConvertToEmailHelper(rfcSupportApproveDetail1, rfcSupportApproveDetail.getUser().getName()))
+                .collect(Collectors.toList());
 
-//    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails) {
-//        if (rfcSupportApproveDetails.stream().anyMatch(rfcSupportApproveDetail -> rfcSupportApproveDetail
-//                .getRequestedForType().equals(RequestedForType.SUPPORT))) {
-//            rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> !rfcSupportApproveDetail
-//                    .getRequestedForType().equals(RequestedForType.APPROVE));
-//            RfcSupportApproveDetail rfcSupportApproveDetail = rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> rfcSupportApproveDetail1
-//                    .getRequestedForType().equals(RequestedForType.CREATE)).findFirst().get();
-//
-//            rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> !rfcSupportApproveDetail1
-//                    .getRequestedForType().equals(RequestedForType.CREATE)).map(rfcSupportApproveDetail1 ->
-//                    ConvertToEmailHelper(rfcSupportApproveDetail1, rfcSupportApproveDetail.getUser().getName()))
-//                    .collect(Collectors.toList());
-//        }
-//
-
-//        return null;
-//    }
+    }
 
     private Mail ConvertToEmailHelper(RfcSupportApproveDetail rfcSupportApproveDetail, String userName) {
 
@@ -134,97 +128,4 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
         return mail;
 
     }
-/////////
-    //
-    //g
-    //
-//
-//
-//    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails){
-//
-//        if(rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
-//                .getRequestedForType().equals(RequestedForType.SUPPORT)).findFirst().isPresent()){
-//
-//            rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> !rfcSupportApproveDetail
-//                    .getRequestedForType().equals(RequestedForType.APPROVE));
-//        }
-//        RfcSupportApproveDetail rfcSupportApproveDetail=rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> rfcSupportApproveDetail1
-//                .getRequestedForType().equals(RequestedForType.CREATE)).findFirst().get();
-//
-//        return rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> rfcSupportApproveDetail1
-//                .getRequestedForType().equals(RequestedForType.CREATE)).map(rfcSupportApproveDetail1 ->  )
-//
-//
-//    }
-//
-
-
-    //    @Override
-//    public void saveSupportApproveDetails(List<Long> approvedByUserIds,
-//                                          List<Long> supportedByUserIds,
-//                                          RfcDetail rfcDetail,
-//                                          RequestedForType requestedForType) {
-//        List<Long> users = new ArrayList<>();
-//        users.addAll(approvedByUserIds);
-//        users.addAll(supportedByUserIds);
-//        Map<Long, User> userMap = userService.findAllUserByIdsIn(users).stream()
-//                .collect(Collectors.toMap(user -> user.getId(), user -> user));
-//
-//        List<RfcSupportApproveDetail> rfcSupportApproveDetails = new ArrayList<>();
-//
-//        rfcSupportApproveDetails.addAll(approvedByUserIds.stream().map(aLong -> saveSupporterApprover(aLong, userMap, rfcDetail
-//                , RequestedForType.APPROVE)).collect(Collectors.toList()));
-//
-//        if (supportedByUserIds.size() > 0) {
-//            rfcSupportApproveDetails.addAll(supportedByUserIds.stream().map(aLong -> saveSupporterApprover(aLong, userMap
-//                    , rfcDetail, RequestedForType.SUPPORT)).collect(Collectors.toList()));
-//        }
-//        rfcSupportApproveDetails.add(saveSupporterApprover(AuthUtil.getCurrentUser().getId(), userMap, rfcDetail, RequestedForType.CREATE));
-//
-//
-//        rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
-//
-//    }
-//
-//    private RfcSupportApproveDetail saveSupporterApprover(Long userIds,
-//                                                          Map<Long, User> userMap, RfcDetail rfcDetail, RequestedForType requestedForType) {
-//        RfcSupportApproveDetail rfcSupportApproveDetail = new RfcSupportApproveDetail();
-//        rfcSupportApproveDetail.setRfcDetail(rfcDetail);
-//        rfcSupportApproveDetail.setUser(userMap.get(userIds));
-//        rfcSupportApproveDetail.setStatus(Status.ACTIVE);
-//        rfcSupportApproveDetail.setRequestedForType(requestedForType);
-//        return rfcSupportApproveDetail;
-//    }
-//
-//    private List<Mail> emailTo(List<RfcSupportApproveDetail> rfcSupportApproveDetails) {
-//
-//        if (rfcSupportApproveDetails.stream().anyMatch(rfcSupportApproveDetail -> rfcSupportApproveDetail
-//                .getRequestedForType().equals(RequestedForType.SUPPORT))) {
-//            rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> !rfcSupportApproveDetail
-//                    .getRequestedForType().equals(RequestedForType.APPROVE));
-//        }
-//        RfcSupportApproveDetail rfcSupportApproveDetail = rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> rfcSupportApproveDetail1
-//                .getRequestedForType().equals(RequestedForType.CREATE)).findFirst().get();
-//
-//
-//        return rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail1 -> !rfcSupportApproveDetail1
-//                .getRequestedForType().equals(RequestedForType.CREATE))
-//                .map(rfcSupportApproveDetail1 -> convertToMailHelper(rfcSupportApproveDetail1
-//                        , rfcSupportApproveDetail.getUser().getName()))
-//                .collect(Collectors.toList());
-//    }
-
-//    private Mail convertToMailHelper(RfcSupportApproveDetail rfcSupportApproveDetail, String name) {
-//
-//        Mail mail = new Mail();
-//        Map<String, Object> objectMap = new HashMap<>();
-//        objectMap.put("name", rfcSupportApproveDetail.getUser().getName());
-//        objectMap.put("action", rfcSupportApproveDetail.getRequestedForType().name());
-//        objectMap.put("requested by", name);
-//        mail.setTo(rfcSupportApproveDetail.getUser().getEmail());
-//        mail.setModel(objectMap);
-//        return mail;
-//    }
-
-
 }

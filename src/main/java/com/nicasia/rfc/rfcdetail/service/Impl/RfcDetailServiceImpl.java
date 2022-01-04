@@ -5,10 +5,12 @@ import com.nicasia.rfc.core.usermanagement.user.service.UserService;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.ApprovalStatus;
+import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
+import com.nicasia.rfc.rfcdetail.service.RfcSupportApproveDetailService;
 import com.nicasia.rfc.security.jwt.AuthUtil;
 import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.shared.exception.ClientException;
@@ -27,12 +29,18 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     private final UserService userService;
     private final RfcDetailRepository rfcDetailRepository;
     private final RfcDetailConvert rfcDetailConvert;
+    private final RfcSupportApproveDetailService rfcSupportApproveDetailService;
 
-    public RfcDetailServiceImpl(DepartmentService departmentService, UserService userService, RfcDetailRepository rfcDetailRepository, RfcDetailConvert rfcDetailConvert) {
+    public RfcDetailServiceImpl(DepartmentService departmentService,
+                                UserService userService,
+                                RfcDetailRepository rfcDetailRepository,
+                                RfcDetailConvert rfcDetailConvert,
+                                RfcSupportApproveDetailService rfcSupportApproveDetailService) {
         this.departmentService = departmentService;
         this.userService = userService;
         this.rfcDetailRepository = rfcDetailRepository;
         this.rfcDetailConvert = rfcDetailConvert;
+        this.rfcSupportApproveDetailService = rfcSupportApproveDetailService;
     }
 
     @Override
@@ -56,7 +64,10 @@ public class RfcDetailServiceImpl implements RfcDetailService {
             rfcDetail.setApprovalStatus(ApprovalStatus.REQUESTED);
         }
         RfcDetail rfcDetail1=rfcDetailRepository.save(rfcDetail);
-
+       rfcSupportApproveDetailService.saveSupportApproveDetails(
+               rfcDetailRequest.getApprovedByUserIds()
+               ,rfcDetailRequest.getSupportedByUserIds()
+               ,rfcDetail1, RequestType.PRE_APPROVAL);
 
         return null;
 
