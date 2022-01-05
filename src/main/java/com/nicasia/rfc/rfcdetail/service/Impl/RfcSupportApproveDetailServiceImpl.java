@@ -1,6 +1,7 @@
 package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.core.email.Mail;
+import com.nicasia.rfc.core.email.service.EmailService;
 import com.nicasia.rfc.core.usermanagement.user.entity.User;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
 import com.nicasia.rfc.rfcdetail.entity.RequestType;
@@ -24,10 +25,12 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
 
     private final UserService userService;
     private final RfcSupportApproveDetailRepository rfcSupportApproveDetailRepository;
+    private final EmailService emailService;
 
-    public RfcSupportApproveDetailServiceImpl(UserService userService, RfcSupportApproveDetailRepository rfcSupportApproveDetailRepository) {
+    public RfcSupportApproveDetailServiceImpl(UserService userService, RfcSupportApproveDetailRepository rfcSupportApproveDetailRepository, EmailService emailService) {
         this.userService = userService;
         this.rfcSupportApproveDetailRepository = rfcSupportApproveDetailRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -45,44 +48,23 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
         List<RfcSupportApproveDetail> rfcSupportApproveDetails = new ArrayList<>();
 
         rfcSupportApproveDetails.addAll(approvedByUserIds.stream().map(aLong ->
-                saveApproverSupporter(aLong, userMap, rfcDetail,requestType,
+                saveApproverSupporter(aLong, userMap, rfcDetail, requestType,
                         RequestedForType.APPROVE)).collect(Collectors.toList()));
 
         if (supportedByUserIds.size() > 0) {
             rfcSupportApproveDetails.addAll(supportedByUserIds.stream().map(aLong ->
-                    saveApproverSupporter(aLong, userMap, rfcDetail,requestType,
+                    saveApproverSupporter(aLong, userMap, rfcDetail, requestType,
                             RequestedForType.SUPPORT)).collect(Collectors.toList()));
         }
 
         rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser()
-                .getId(), userMap, rfcDetail,requestType,
+                        .getId(), userMap, rfcDetail, requestType,
                 RequestedForType.CREATE));
 
-        rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
-    }
 
-//    @Override
-//    public void forward(List<Long> approversIds, List<Long> supportersIds, RfcDetail rfcDetail, RequestType requestType) {
-//
-//        List<Long> userIds=new ArrayList<>();
-//        userIds.addAll(approversIds);
-//        userIds.addAll(supportersIds);
-//        Map<Long, User> userMap1=userService.findAllUserByIdsIn(userIds).stream()
-//                .collect(Collectors.toMap(user -> user.getId(),o -> o));
-//
-//        List<RfcSupportApproveDetail> rfcSupportApproveDetails=new ArrayList<>();
-//        rfcSupportApproveDetails.addAll(approversIds.stream().map(aLong -> saveApproverSupporter(aLong,
-//                userMap1,rfcDetail,requestType,RequestedForType.APPROVE)).collect(Collectors.toList()));
-//
-//        rfcSupportApproveDetails.addAll(supportersIds.stream().map(aLong -> saveApproverSupporter(aLong,
-//                userMap1,rfcDetail,requestType,RequestedForType.APPROVE)).collect(Collectors.toList()));
-//
-//        rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser()
-//                .getId(),userMap1,rfcDetail,requestType,RequestedForType.CREATE));
-//
-//        rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
-//
-//    }
+        rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
+
+    }
 
     public RfcSupportApproveDetail saveApproverSupporter(Long userIds,
                                                          Map<Long, User> userMap,

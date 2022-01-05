@@ -7,6 +7,8 @@ import com.nicasia.rfc.rfcdetail.repo.custom.RfcDetailRepositoryCustom;
 import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDetailRepository>
         implements RfcDetailRepositoryCustom {
@@ -25,4 +27,14 @@ public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDe
     }
 
 
+    @Override
+    public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, Pageable pageable) {
+//
+//            if(refCode!=""){
+//                    qRfcDetail.preApprovalMemoCode.eq(refCode);
+//                }
+//            }
+
+        return null;
+    }
 }

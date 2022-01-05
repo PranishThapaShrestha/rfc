@@ -2,6 +2,7 @@ package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
+import com.nicasia.rfc.rfcdetail.dto.AddRemarksDto;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.ApprovalStatus;
@@ -16,6 +17,7 @@ import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.shared.exception.ClientException;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
+import com.nicasia.rfc.util.ReferenceCodeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     private final RfcDetailConvert rfcDetailConvert;
     private final RfcSupportApproveDetailService rfcSupportApproveDetailService;
 
+
     public RfcDetailServiceImpl(DepartmentService departmentService,
                                 UserService userService,
                                 RfcDetailRepository rfcDetailRepository,
@@ -41,6 +44,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         this.rfcDetailRepository = rfcDetailRepository;
         this.rfcDetailConvert = rfcDetailConvert;
         this.rfcSupportApproveDetailService = rfcSupportApproveDetailService;
+
     }
 
     @Override
@@ -49,6 +53,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         if (rfcDetailRequest.getApprovedByUserIds().size() > 1) {
             throw new ClientException("Dear user, multiple approver is not allowed");
         }
+//        FiscalYear fiscalYear=fiscalYearRepository.findById(rfcDetailRequest.getFiscalYearId()).get();
         RfcDetail rfcDetail = new RfcDetail();
         rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
         rfcDetail.setDeparmentname(AuthUtil.getCurrentUser().getDepartment());
@@ -56,6 +61,9 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         rfcDetail.setStatus(Status.ACTIVE);
         rfcDetail.setApprovalStatus(ApprovalStatus.PENDING);
         rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());
+//        rfcDetail.setFiscalYear(fiscalYear);
+        rfcDetail.setPreApprovalMemoCode(ReferenceCodeUtil.getRefCode());
+
         rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
         rfcDetail.setUnit(rfcDetail.getUnit());
         if (rfcDetailRequest.getSupportedByUserIds().size() == 0) {
@@ -69,7 +77,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                ,rfcDetailRequest.getSupportedByUserIds()
                ,rfcDetail1, RequestType.PRE_APPROVAL);
 
-        return null;
+        return SuccessResponse.builder().successMessage("Request for change is created with list of supporters and one approver").build();
 
     }
 
@@ -110,6 +118,11 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         return rfcDetailRepository.findById(id).orElseThrow
                 (() -> new ResourceNotAvailableException("RfcDetail", "id", id));
 
+    }
+
+    @Override
+    public SuccessResponse addRemarks(AddRemarksDto addRemarksDto, Long rfcDetailsId) {
+        return null;
     }
 
     @Override

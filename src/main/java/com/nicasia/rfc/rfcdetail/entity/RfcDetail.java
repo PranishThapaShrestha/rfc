@@ -29,6 +29,12 @@ public class RfcDetail extends BaseEntity {
     @JoinColumn(name = "department_name")
     private Department deparmentname;
 
+    @Column(name = "pre_approval_memo_code", length = 30)
+    private String preApprovalMemoCode;
+
+//    @ManyToOne
+//    @JoinColumn(name = "fiscal_year_id")
+//    private FiscalYear fiscalYear;
 
     @Column(name = "unit")
     private String unit;

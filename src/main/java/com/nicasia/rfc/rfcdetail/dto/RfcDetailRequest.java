@@ -17,6 +17,7 @@ public class RfcDetailRequest {
     private Long requestedBy;
     private Long supportedBy;
     private String unit;
+    private Long fiscalYearId;
     private Date requestDate;
     private Date dateDecided;
     private List<Long> supportedByUserIds;

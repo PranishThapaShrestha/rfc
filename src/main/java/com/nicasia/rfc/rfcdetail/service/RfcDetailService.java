@@ -1,5 +1,6 @@
 package com.nicasia.rfc.rfcdetail.service;
 
+import com.nicasia.rfc.rfcdetail.dto.AddRemarksDto;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
@@ -18,5 +19,7 @@ public interface RfcDetailService {
     List<RfcDetailResponse> retrieveAllRfcDetails();
 
     RfcDetail findById(Long id);
+
+    SuccessResponse addRemarks(AddRemarksDto addRemarksDto,Long rfcDetailsId);
 
 }
