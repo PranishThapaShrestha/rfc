@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Builder
 @Getter
@@ -12,14 +13,9 @@ import java.util.Date;
 public class RfcDetailResponse {
 
     private String projectname;
-    private String requestedby;
-    private String deparmentname;
-    private String supportedby;
+    private List<SupportedApprovedDetail> supportedApprovedDetails;
     private String unit;
     private Date requestdate;
-    private Date datedecided;
-    private String approvalStatus;
-    private String status;
 
 
 

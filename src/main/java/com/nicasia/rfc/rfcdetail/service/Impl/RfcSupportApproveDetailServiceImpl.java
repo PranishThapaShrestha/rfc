@@ -66,6 +66,11 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
 
     }
 
+    @Override
+    public List<RfcSupportApproveDetail> findRfcSupportApproveDetailById(Long rfcDetailId) {
+        return rfcSupportApproveDetailRepository.findAllByRfcId(rfcDetailId);
+    }
+
     public RfcSupportApproveDetail saveApproverSupporter(Long userIds,
                                                          Map<Long, User> userMap,
                                                          RfcDetail rfcDetail,

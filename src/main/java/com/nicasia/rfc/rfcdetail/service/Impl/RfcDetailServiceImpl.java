@@ -1,13 +1,14 @@
 package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
+import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
-import com.nicasia.rfc.rfcdetail.dto.AddRemarksDto;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
-import com.nicasia.rfc.rfcdetail.entity.ApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RequestType;
+import com.nicasia.rfc.rfcdetail.entity.RfcApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
+import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
@@ -18,10 +19,11 @@ import com.nicasia.rfc.shared.exception.ClientException;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import com.nicasia.rfc.util.ReferenceCodeUtil;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RfcDetailServiceImpl implements RfcDetailService {
@@ -59,7 +61,6 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         rfcDetail.setDeparmentname(AuthUtil.getCurrentUser().getDepartment());
         rfcDetail.setRequestedby(AuthUtil.getCurrentUser());
         rfcDetail.setStatus(Status.ACTIVE);
-        rfcDetail.setApprovalStatus(ApprovalStatus.PENDING);
         rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());
 //        rfcDetail.setFiscalYear(fiscalYear);
         rfcDetail.setPreApprovalMemoCode(ReferenceCodeUtil.getRefCode());
@@ -67,51 +68,60 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
         rfcDetail.setUnit(rfcDetail.getUnit());
         if (rfcDetailRequest.getSupportedByUserIds().size() == 0) {
-            rfcDetail.setApprovalStatus(ApprovalStatus.SUPPORTED);
+            rfcDetail.setRfcApprovalStatus(RfcApprovalStatus.SUPPORTED);
         } else {
-            rfcDetail.setApprovalStatus(ApprovalStatus.REQUESTED);
+            rfcDetail.setRfcApprovalStatus(RfcApprovalStatus.REQUESTED);
         }
-        RfcDetail rfcDetail1=rfcDetailRepository.save(rfcDetail);
-       rfcSupportApproveDetailService.saveSupportApproveDetails(
-               rfcDetailRequest.getApprovedByUserIds()
-               ,rfcDetailRequest.getSupportedByUserIds()
-               ,rfcDetail1, RequestType.PRE_APPROVAL);
+        RfcDetail rfcDetail1 = rfcDetailRepository.save(rfcDetail);
+        rfcSupportApproveDetailService.saveSupportApproveDetails(
+                rfcDetailRequest.getApprovedByUserIds()
+                , rfcDetailRequest.getSupportedByUserIds()
+                , rfcDetail1, RequestType.PRE_APPROVAL);
 
         return SuccessResponse.builder().successMessage("Request for change is created with list of supporters and one approver").build();
 
     }
 
     @Override
-    public RfcDetailResponse updateRfcDetail(Long id, RfcDetailRequest rfcDetailRequest) {
+    public RfcDetailResponse getPreApprovalRfcDetail(Long rfcDetailId) {
 
-        RfcDetail rfcDetail = rfcDetailRepository.findById(id).orElseThrow
-                (() -> new ResourceNotAvailableException("RfcDetails", "byId", id));
-        rfcDetail.setProjectname(rfcDetailRequest.getProjectname());
-        rfcDetail.setDeparmentname(departmentService.findById(rfcDetailRequest.getDepartmentId()));
-        rfcDetail.setRequestedby(userService.findById(rfcDetailRequest.getRequestedBy()));
-        rfcDetail.setUnit(rfcDetailRequest.getUnit());
-        rfcDetailRepository.save(rfcDetail);
-        return rfcDetailConvert.convertOne(rfcDetail);
+        List<RfcSupportApproveDetail> rfcSupportApproveDetailById = rfcSupportApproveDetailService.
+                findRfcSupportApproveDetailById(rfcDetailId);
 
+        List<Long> approveSupportIds = rfcSupportApproveDetailById.stream()
+                .map(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                        .getUser().getId()).collect(Collectors.toList());
+
+        RfcDetail rfcDetail=findById(rfcDetailId);
+        Map<Long, UserMiniResource> userMiniResourceByUserIds = userService.findUserMiniResourceByUserIds(approveSupportIds);
+
+        return rfcDetailConvert.convertToRfcDetail(rfcSupportApproveDetailById,rfcDetail,userMiniResourceByUserIds);
     }
 
-    @NotNull
-    private RfcDetail getRfcDetail(RfcDetailRequest rfcDetailRequest, RfcDetail rfcDetail) {
-        rfcDetail.setUnit(rfcDetailRequest.getUnit());
-        rfcDetail.setRequestdate(rfcDetailRequest.getRequestDate());
-        rfcDetail.setDatedecided(rfcDetailRequest.getDateDecided());
-        rfcDetail.setApprovalStatus(ApprovalStatus.PENDING);
-        return rfcDetailRepository.save(rfcDetail);
-    }
 
-    @Override
-    public RfcDetailResponse removeRfcDetail(Long id) {
-        RfcDetail rfcDetail = rfcDetailRepository.findById(id).orElseThrow
-                (() -> new ResourceNotAvailableException("RfcDetail", "id", id));
-        rfcDetail.setStatus(Status.INACTIVE);
 
-        return rfcDetailConvert.convertOne(rfcDetailRepository.save(rfcDetail));
-    }
+
+
+
+
+
+    //    @Override
+//    public RfcDetailResponse getPreApprovalRfcDetail(Long rfcDetailId) {
+//
+//        List<RfcSupportApproveDetail> rfcSupportApproveDetailById = rfcSupportApproveDetailService.
+//                findRfcSupportApproveDetailById(rfcDetailId);
+//
+//        List<Long> approvalOrSupporters = rfcSupportApproveDetailById.stream()
+//                .map(rfcSupportApproveDetail -> rfcSupportApproveDetail.getUser().getId()).collect(Collectors.toList());
+//
+//
+//        RfcDetail rfcDetail = findById(rfcDetailId);
+//
+//        Map<Long, UserMiniResource> longUserMiniResourceMap = userService.findUserMiniResourceByUserIds(approvalOrSupporters);
+//
+//        return rfcDetailConvert.convertToRfcDetail(rfcSupportApproveDetailById,rfcDetail,longUserMiniResourceMap);
+//    }
+
 
     @Override
     public RfcDetail findById(Long id) {
@@ -120,14 +130,5 @@ public class RfcDetailServiceImpl implements RfcDetailService {
 
     }
 
-    @Override
-    public SuccessResponse addRemarks(AddRemarksDto addRemarksDto, Long rfcDetailsId) {
-        return null;
-    }
 
-    @Override
-    public List<RfcDetailResponse> retrieveAllRfcDetails() {
-        return rfcDetailConvert.convertAll((List<RfcDetail>) rfcDetailRepository.findAll());
-
-    }
 }

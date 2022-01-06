@@ -45,7 +45,7 @@ public class RfcDetail extends BaseEntity {
     @Column(name = "date_decided")
     private Date datedecided;
 
-    private ApprovalStatus approvalStatus;
+    private RfcApprovalStatus rfcApprovalStatus;
 
     private Status status;
 

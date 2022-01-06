@@ -37,13 +37,16 @@ public class UserConvertImpl implements UserConvert {
     @Override
     public UserMiniResource convertToMiniResource(User user) {
 
-        UserMiniResource.builder()
+        return UserMiniResource.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .departmentCode(user.getDepartment().getDeptcode())
                 .designationCode(user.getDesignation().getDesgcode())
                 .fullName(user.getUsername()).build();
+    }
 
-        return null;
+    @Override
+    public List<UserMiniResource> convertAllToMiniResource(List<User> users) {
+        return users.stream().map(user -> convertToMiniResource(user)).collect(Collectors.toList());
     }
 }

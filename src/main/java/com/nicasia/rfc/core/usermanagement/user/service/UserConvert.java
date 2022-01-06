@@ -14,6 +14,8 @@ public interface UserConvert {
 
     UserMiniResource convertToMiniResource(User user);
 
+    List<UserMiniResource> convertAllToMiniResource(List<User> users);
+
 }
 
 

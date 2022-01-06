@@ -6,8 +6,6 @@ import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v1")
 public class RfcDetailController {
@@ -18,29 +16,14 @@ public class RfcDetailController {
         this.rfcDetailService = rfcDetailService;
     }
 
-    @PostMapping(value = "/rfcdetails")
-    public SuccessResponse createRfccreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
+    @PostMapping(value = "/rfcdetail")
+    public SuccessResponse createRfcCreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
         return rfcDetailService.createPreApprovalRfcDetail(rfcDetailRequest);
     }
 
-
-
-    // todo below controllers are to be confirmed
-
-    @PostMapping(value = "/rfcdetails/{id}/update")
-    public RfcDetailResponse updateRfcDetails(@PathVariable(value = "id") Long id, RfcDetailRequest rfcDetailRequest) {
-        return rfcDetailService.updateRfcDetail(id, rfcDetailRequest);
+    @GetMapping(value = "/{rfcdetail_id}")
+    public RfcDetailResponse getAllPreApprovalRequest(@PathVariable Long rfcdetail_id) {
+        return rfcDetailService.getPreApprovalRfcDetail(rfcdetail_id);
     }
-
-    @PostMapping(value = "/rfcdetails/{id}/remove")
-    public RfcDetailResponse removeById(@PathVariable(value = "id") Long id) {
-        return rfcDetailService.removeRfcDetail(id);
-    }
-
-    @GetMapping(value = "/rfcdetails")
-    public List<RfcDetailResponse> getAll() {
-        return rfcDetailService.retrieveAllRfcDetails();
-    }
-
 
 }

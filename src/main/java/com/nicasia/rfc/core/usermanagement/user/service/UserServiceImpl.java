@@ -1,6 +1,10 @@
 package com.nicasia.rfc.core.usermanagement.user.service;
 
 import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
+import com.nicasia.rfc.core.usermanagement.designation.service.DesignationService;
+import com.nicasia.rfc.core.usermanagement.user.dto.CreateUserRequest;
+import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
+import com.nicasia.rfc.core.usermanagement.user.dto.UserResource;
 import com.nicasia.rfc.core.usermanagement.user.entity.Roles;
 import com.nicasia.rfc.core.usermanagement.user.entity.User;
 import com.nicasia.rfc.core.usermanagement.user.repo.RoleRepository;
@@ -10,13 +14,11 @@ import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.shared.exception.ClientException;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
-import com.nicasia.rfc.core.usermanagement.designation.service.DesignationService;
-import com.nicasia.rfc.core.usermanagement.user.dto.CreateUserRequest;
-import com.nicasia.rfc.core.usermanagement.user.dto.UserResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,6 +71,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<Long, UserMiniResource> findUserMiniResourceByUserIds(List<Long> userIds) {
+
+        return userConvert.convertAllToMiniResource(userRepository.findAllUserByIds(userIds))
+                .stream().collect(Collectors.toMap(userMiniResource -> userMiniResource.getUserId(), o -> o));
+    }
+
+    @Override
     public List<UserResource> getAllUsers() {
         return userConvert.convertAllResource((List<User>) userRepository.findAll());
     }
@@ -85,6 +94,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllUserByIds(ids);
 
     }
+
 
     @Override
     public User findById(Long id) {
