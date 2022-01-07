@@ -25,12 +25,11 @@ public class RfcSupportApproveDetailRepositoryImpl extends BaseRepositoryImpl<Rf
         this.repository=rfcSupportApproveDetailRepository;
     }
 
-
     @Override
     public List<RfcSupportApproveDetail> findAllByRfcId(Long rfcId) {
 
         return (List<RfcSupportApproveDetail>) repository.findAll(qRfcSupportApproveDetail.rfcDetail.id.eq(rfcId)
                 .and(qRfcSupportApproveDetail.rfcDetail.status.eq(Status.ACTIVE)));
-
     }
+
 }

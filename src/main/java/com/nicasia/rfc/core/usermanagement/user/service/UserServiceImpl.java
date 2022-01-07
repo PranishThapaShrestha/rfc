@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Long, UserMiniResource> findUserMiniResourceByUserIds(List<Long> userIds) {
 
-        return userConvert.convertAllToMiniResource(userRepository.findAllUserByIds(userIds))
-                .stream().collect(Collectors.toMap(userMiniResource -> userMiniResource.getUserId(), o -> o));
+       return userConvert.convertAllToMiniResource(userRepository.findAllUserByIds(userIds))
+                .stream().collect(Collectors.toMap(userMiniResource -> userMiniResource.getUserId(),o -> o));
     }
 
     @Override
@@ -92,7 +92,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllUserByIdsIn(List<Long> ids) {
         return userRepository.findAllUserByIds(ids);
-
     }
 
 

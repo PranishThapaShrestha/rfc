@@ -53,4 +53,5 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserRepository>
     public List<User> findAllUserByIds(List<Long> userIds) {
         return (List<User>) repository.findAll(quser.id.in(userIds));
     }
+
 }

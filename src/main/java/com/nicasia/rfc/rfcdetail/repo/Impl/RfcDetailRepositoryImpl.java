@@ -1,10 +1,12 @@
 package com.nicasia.rfc.rfcdetail.repo.Impl;
 
 import com.nicasia.rfc.rfcdetail.entity.QRfcDetail;
+import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
 import com.nicasia.rfc.rfcdetail.repo.custom.RfcDetailRepositoryCustom;
 import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -28,12 +30,16 @@ public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDe
 
 
     @Override
-    public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, Pageable pageable) {
-//
-//            if(refCode!=""){
-//                    qRfcDetail.preApprovalMemoCode.eq(refCode);
-//                }
-//            }
+    public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, RequestType requestType, Pageable pageable) {
+
+        BooleanBuilder booleanBuilder=new BooleanBuilder();
+            if(refCode!=""){
+                if(requestType.equals(RequestType.PRE_APPROVAL)){
+                    booleanBuilder.and(qRfcDetail.preApprovalMemoCode.eq(refCode));
+                    booleanBuilder.and(qRfcDetail.)
+                }
+
+            }
 
         return null;
     }

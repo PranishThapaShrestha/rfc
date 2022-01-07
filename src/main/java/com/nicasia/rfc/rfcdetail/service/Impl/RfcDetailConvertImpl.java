@@ -18,25 +18,26 @@ public class RfcDetailConvertImpl implements RfcDetailConvert {
     @Override
     public RfcDetailResponse convertToRfcDetail(List<RfcSupportApproveDetail> rfcSupportApproveDetails, RfcDetail rfcDetail, Map<Long, UserMiniResource> userMiniResourceMap) {
 
-        return  RfcDetailResponse.builder()
+        return RfcDetailResponse.builder()
                 .projectname(rfcDetail.getProjectname())
-                .unit(rfcDetail.getUnit())
                 .requestdate(rfcDetail.getRequestdate())
                 .supportedApprovedDetails(rfcSupportApproveDetails.stream()
-                        .map(rfcSupportApproveDetail -> convertToSupportApproveDetail
-                                (rfcSupportApproveDetail,userMiniResourceMap)).collect(Collectors.toList()))
-                .build();
+                        .map(rfcSupportApproveDetail -> convertToSupportApproveDetail(rfcSupportApproveDetail, userMiniResourceMap))
+                        .collect(Collectors.toList()))
+                .unit(rfcDetail.getUnit()).build();
+
     }
 
-    private SupportedApprovedDetail convertToSupportApproveDetail(RfcSupportApproveDetail rfcSupportApproveDetail, Map<Long, UserMiniResource> userMiniResourceMap) {
 
+    private SupportedApprovedDetail convertToSupportApproveDetail(RfcSupportApproveDetail rfcSupportApproveDetail,
+                                                                  Map<Long, UserMiniResource> longUserMiniResourceMap) {
         return SupportedApprovedDetail.builder()
                 .approveSupportId(rfcSupportApproveDetail.getId())
-                .requestedFor(rfcSupportApproveDetail.getRequestedForType().name())
-                .userMiniResource(userMiniResourceMap.get(rfcSupportApproveDetail.getUser().getId()))
+                .userMiniResource(longUserMiniResourceMap.get(rfcSupportApproveDetail.getUser().getId()))
                 .status(rfcSupportApproveDetail.getStatus().name())
-                .type(rfcSupportApproveDetail.getRequestType().name()).build();
-
+                .requestedFor(rfcSupportApproveDetail.getRequestedForType().name())
+                .type(rfcSupportApproveDetail.getRequestType().name())
+                .build();
     }
 }
 
