@@ -42,7 +42,8 @@ public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDe
         }
         if(requestType.equals(RequestType.PRE_APPROVAL)){
             booleanBuilder.and(qRfcDetail.requestedby.id.eq(AuthUtil.getCurrentUser().getId()));
-            booleanBuilder.and(qRfcDetail.approvalStatus.eq(RfcApprovalStatus.REQUESTED));
+            booleanBuilder.and(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.REQUESTED))
+                    .or(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.APPROVED));
         }
 
         return repository.findAll(booleanBuilder,pageable);

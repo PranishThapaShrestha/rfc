@@ -5,6 +5,7 @@ import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
+import com.nicasia.rfc.rfcdetail.dto.RfcPreapprovalResponse;
 import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
@@ -18,7 +19,10 @@ import com.nicasia.rfc.shared.enums.Status;
 import com.nicasia.rfc.shared.exception.ClientException;
 import com.nicasia.rfc.shared.exception.ResourceNotAvailableException;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
+import com.nicasia.rfc.util.PageResult;
 import com.nicasia.rfc.util.ReferenceCodeUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,6 +84,20 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                 , rfcDetail1, RequestType.PRE_APPROVAL);
 
         return SuccessResponse.builder().successMessage("Request for change is created with list of supporters and one approver").build();
+    }
+
+    @Override
+    public PageResult<RfcPreapprovalResponse> getPreApprovalRfc(String refCode, Pageable pageable) {
+
+        Page<RfcDetail> allRequestedRfcDetails = rfcDetailRepository.findAllRequestedRfcDetails(refCode, RequestType.PRE_APPROVAL, pageable);
+
+        if (allRequestedRfcDetails.getContent().size()==0){
+            return new PageResult<>();
+        }
+        return new PageResult<>(rfcDetailConvert.convertAllToCurrentRfcStatus(allRequestedRfcDetails.getContent(), RequestType.PRE_APPROVAL),
+                allRequestedRfcDetails.getNumber(),
+                allRequestedRfcDetails.getTotalElements(),
+                allRequestedRfcDetails.getTotalPages());
     }
 
     @Override

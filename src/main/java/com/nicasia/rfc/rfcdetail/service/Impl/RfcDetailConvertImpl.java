@@ -2,10 +2,13 @@ package com.nicasia.rfc.rfcdetail.service.Impl;
 
 import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
+import com.nicasia.rfc.rfcdetail.dto.RfcPreapprovalResponse;
 import com.nicasia.rfc.rfcdetail.dto.SupportedApprovedDetail;
+import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
+import com.nicasia.rfc.shared.enums.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +19,9 @@ import java.util.stream.Collectors;
 public class RfcDetailConvertImpl implements RfcDetailConvert {
 
     @Override
-    public RfcDetailResponse convertToRfcDetail(List<RfcSupportApproveDetail> rfcSupportApproveDetails, RfcDetail rfcDetail, Map<Long, UserMiniResource> userMiniResourceMap) {
+    public RfcDetailResponse convertToRfcDetail(List<RfcSupportApproveDetail> rfcSupportApproveDetails,
+                                                RfcDetail rfcDetail,
+                                                Map<Long, UserMiniResource> userMiniResourceMap) {
 
         return RfcDetailResponse.builder()
                 .projectname(rfcDetail.getProjectname())
@@ -28,6 +33,21 @@ public class RfcDetailConvertImpl implements RfcDetailConvert {
 
     }
 
+    @Override
+    public List<RfcPreapprovalResponse> convertAllToCurrentRfcStatus(List<RfcDetail> rfcDetails, RequestType requestType)  {
+        return rfcDetails.stream().map(rfcDetail -> convertToCurrentRfcStatus(rfcDetail, requestType)).collect(Collectors.toList());
+
+    }
+
+    private RfcPreapprovalResponse convertToCurrentRfcStatus(RfcDetail rfcDetail, RequestType requestType) {
+
+        return RfcPreapprovalResponse.builder()
+                .currentApprovalStatus(rfcDetail.getRfcApprovalStatus().name())
+                .projectName(rfcDetail.getProjectname())
+                .requestedDate(rfcDetail.getRequestdate())
+                .status(Status.ACTIVE)
+                .build();
+    }
 
     private SupportedApprovedDetail convertToSupportApproveDetail(RfcSupportApproveDetail rfcSupportApproveDetail,
                                                                   Map<Long, UserMiniResource> longUserMiniResourceMap) {

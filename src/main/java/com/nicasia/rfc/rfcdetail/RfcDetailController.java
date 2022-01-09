@@ -2,6 +2,7 @@ package com.nicasia.rfc.rfcdetail;
 
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
+import com.nicasia.rfc.rfcdetail.dto.RfcPreapprovalResponse;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailService;
 import com.nicasia.rfc.shared.succesresponse.SuccessResponse;
 import com.nicasia.rfc.util.PageResult;
@@ -18,9 +19,15 @@ public class RfcDetailController {
         this.rfcDetailService = rfcDetailService;
     }
 
-    @PostMapping(value = "/rfcdetail")
+    @PostMapping(value = "/pre_approval")
     public SuccessResponse createRfcCreatePreApprovalRfcDetail(@RequestBody RfcDetailRequest rfcDetailRequest) {
         return rfcDetailService.createPreApprovalRfcDetail(rfcDetailRequest);
+    }
+
+    @GetMapping(value = "/pre_approval")
+    public PageResult<RfcPreapprovalResponse> getPreApprovalRequest(@RequestParam(value = "ref_code", required = false) String refCode,
+                                                                    Pageable pageable) {
+        return rfcDetailService.getPreApprovalRfc(refCode, pageable);
     }
 
     @GetMapping(value = "/{rfcdetail_id}")
@@ -28,9 +35,12 @@ public class RfcDetailController {
         return rfcDetailService.getPreApprovalRfcDetail(rfcdetail_id);
     }
 
-    public PageResult<RfcDetailResponse> getPreApprovalRequest(@RequestParam (value = "ref_code",required = false)String refCode,
-                                                               Pageable pageable){
+    @GetMapping(value = "/pre_approval/{requested_for}")
+    public PageResult<RfcPreapprovalResponse> getAllToBeSupportedRequests(@RequestParam(value = "ref_code",required = false) String refCode,
+                                                                          @PathVariable(value = "requested_for")String requestedFor,Pageable pageable){
         return null;
     }
+
+
 
 }
