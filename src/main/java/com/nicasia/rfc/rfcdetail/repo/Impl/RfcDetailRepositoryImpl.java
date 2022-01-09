@@ -2,9 +2,11 @@ package com.nicasia.rfc.rfcdetail.repo.Impl;
 
 import com.nicasia.rfc.rfcdetail.entity.QRfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RequestType;
+import com.nicasia.rfc.rfcdetail.entity.RfcApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
 import com.nicasia.rfc.rfcdetail.repo.custom.RfcDetailRepositoryCustom;
+import com.nicasia.rfc.security.jwt.AuthUtil;
 import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +34,17 @@ public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDe
     @Override
     public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, RequestType requestType, Pageable pageable) {
 
-        BooleanBuilder booleanBuilder=new BooleanBuilder();
-            if(refCode!=""){
-                if(requestType.equals(RequestType.PRE_APPROVAL)){
-                    booleanBuilder.and(qRfcDetail.preApprovalMemoCode.eq(refCode));
-                    booleanBuilder.and(qRfcDetail.)
-                }
-
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (refCode != "") {
+            if (requestType.equals(RequestType.PRE_APPROVAL)) {
+                booleanBuilder.and(qRfcDetail.preApprovalMemoCode.eq(refCode));
             }
+        }
+        if(requestType.equals(RequestType.PRE_APPROVAL)){
+            booleanBuilder.and(qRfcDetail.requestedby.id.eq(AuthUtil.getCurrentUser().getId()));
+            booleanBuilder.and(qRfcDetail.approvalStatus.eq(RfcApprovalStatus.REQUESTED));
+        }
 
-        return null;
+        return repository.findAll(booleanBuilder,pageable);
     }
 }
