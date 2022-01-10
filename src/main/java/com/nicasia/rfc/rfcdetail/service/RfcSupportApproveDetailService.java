@@ -3,6 +3,8 @@ package com.nicasia.rfc.rfcdetail.service;
 import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
+import com.nicasia.rfc.util.PageResult;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public interface RfcSupportApproveDetailService {
 
     List<RfcSupportApproveDetail> findRfcSupportApproveDetailById(Long rfcDetailId);
 
-//    void forward(List<Long> approversIds,List<Long> supportersIds,RfcDetail rfcDetail,RequestType requestType);
+    PageResult<RfcDetail> findAllExpenditureDetailsWithRequestedForType(String refCode,
+                                                                        String requestedFor,
+                                                                        Pageable pageable);
 
 }

@@ -4,7 +4,6 @@ import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
 import com.nicasia.rfc.rfcdetail.dto.RfcPreapprovalResponse;
 import com.nicasia.rfc.rfcdetail.dto.SupportedApprovedDetail;
-import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.rfcdetail.service.RfcDetailConvert;
@@ -34,12 +33,12 @@ public class RfcDetailConvertImpl implements RfcDetailConvert {
     }
 
     @Override
-    public List<RfcPreapprovalResponse> convertAllToCurrentRfcStatus(List<RfcDetail> rfcDetails, RequestType requestType)  {
-        return rfcDetails.stream().map(rfcDetail -> convertToCurrentRfcStatus(rfcDetail, requestType)).collect(Collectors.toList());
+    public List<RfcPreapprovalResponse> convertAllToCurrentRfcStatus(List<RfcDetail> rfcDetails)  {
+        return rfcDetails.stream().map(rfcDetail -> convertToCurrentRfcStatus(rfcDetail)).collect(Collectors.toList());
 
     }
 
-    private RfcPreapprovalResponse convertToCurrentRfcStatus(RfcDetail rfcDetail, RequestType requestType) {
+    private RfcPreapprovalResponse convertToCurrentRfcStatus(RfcDetail rfcDetail) {
 
         return RfcPreapprovalResponse.builder()
                 .currentApprovalStatus(rfcDetail.getRfcApprovalStatus().name())

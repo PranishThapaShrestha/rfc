@@ -39,7 +39,6 @@ public class RfcSupportApproveDetailRepositoryImpl extends BaseRepositoryImpl<Rf
     @Override
     public PageResult<RfcDetail> findAllByRequestedForType(String refCode,
                                                            String requestedFor,
-                                                           RequestType requestType,
                                                            Pageable pageable) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 

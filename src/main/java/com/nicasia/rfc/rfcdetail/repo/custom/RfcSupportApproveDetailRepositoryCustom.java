@@ -1,6 +1,5 @@
 package com.nicasia.rfc.rfcdetail.repo.custom;
 
-import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.shared.abstracts.BaseRepositoryCustom;
@@ -15,7 +14,6 @@ public interface RfcSupportApproveDetailRepositoryCustom extends BaseRepositoryC
 
     PageResult<RfcDetail> findAllByRequestedForType(String refCode,
                                                     String requestedFor,
-                                                    RequestType requestType,
                                                     Pageable pageable);
 
 }

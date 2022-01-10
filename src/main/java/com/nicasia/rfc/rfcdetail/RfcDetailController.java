@@ -30,17 +30,18 @@ public class RfcDetailController {
         return rfcDetailService.getPreApprovalRfc(refCode, pageable);
     }
 
+
     @GetMapping(value = "/{rfcdetail_id}")
     public RfcDetailResponse getAllPreApprovalRequest(@PathVariable Long rfcdetail_id) {
         return rfcDetailService.getPreApprovalRfcDetail(rfcdetail_id);
     }
 
     @GetMapping(value = "/pre_approval/{requested_for}")
-    public PageResult<RfcPreapprovalResponse> getAllToBeSupportedRequests(@RequestParam(value = "ref_code",required = false) String refCode,
-                                                                          @PathVariable(value = "requested_for")String requestedFor,Pageable pageable){
-        return null;
-    }
+    public PageResult<RfcPreapprovalResponse> getAllToBeSupportedRequests(@RequestParam(value = "ref_code", required = false) String refCode,
+                                                                          @PathVariable(value = "requested_for") String requestedFor, Pageable pageable) {
 
+        return rfcDetailService.getAllRequestedForPreApprovalDetails(refCode,requestedFor,pageable);
+    }
 
 
 }

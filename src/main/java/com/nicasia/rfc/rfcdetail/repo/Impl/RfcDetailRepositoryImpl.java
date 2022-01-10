@@ -1,7 +1,6 @@
 package com.nicasia.rfc.rfcdetail.repo.Impl;
 
 import com.nicasia.rfc.rfcdetail.entity.QRfcDetail;
-import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcApprovalStatus;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.repo.RfcDetailRepository;
@@ -31,21 +30,18 @@ public class RfcDetailRepositoryImpl extends BaseRepositoryImpl<RfcDetail, RfcDe
     }
 
 
+
     @Override
-    public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, RequestType requestType, Pageable pageable) {
-
+    public Page<RfcDetail> findAllRequestedRfcDetails(String refCode, Pageable pageable) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if (refCode != "") {
-            if (requestType.equals(RequestType.PRE_APPROVAL)) {
-                booleanBuilder.and(qRfcDetail.preApprovalMemoCode.eq(refCode));
-            }
-        }
-        if(requestType.equals(RequestType.PRE_APPROVAL)){
-            booleanBuilder.and(qRfcDetail.requestedby.id.eq(AuthUtil.getCurrentUser().getId()));
-            booleanBuilder.and(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.REQUESTED))
-                    .or(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.APPROVED));
-        }
 
+        if (refCode!=""){
+            qRfcDetail.preApprovalMemoCode.eq((refCode));
+        }
+        booleanBuilder.and(qRfcDetail.requestedby.id.eq(AuthUtil.getCurrentUser().getId()));
+        booleanBuilder.and(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.REQUESTED))
+                .or(qRfcDetail.rfcApprovalStatus.eq(RfcApprovalStatus.APPROVED));
         return repository.findAll(booleanBuilder,pageable);
+
     }
 }

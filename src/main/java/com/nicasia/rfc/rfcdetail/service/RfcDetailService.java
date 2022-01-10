@@ -18,4 +18,9 @@ public interface RfcDetailService {
 
     RfcDetail findById(Long id);
 
+    PageResult<RfcPreapprovalResponse> getAllRequestedForPreApprovalDetails(String refCode,
+                                                               String requestedFor,
+                                                               Pageable pageable);
+
+
 }

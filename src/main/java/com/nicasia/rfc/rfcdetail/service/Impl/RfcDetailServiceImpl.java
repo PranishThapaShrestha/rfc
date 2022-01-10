@@ -89,12 +89,12 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     @Override
     public PageResult<RfcPreapprovalResponse> getPreApprovalRfc(String refCode, Pageable pageable) {
 
-        Page<RfcDetail> allRequestedRfcDetails = rfcDetailRepository.findAllRequestedRfcDetails(refCode, RequestType.PRE_APPROVAL, pageable);
+        Page<RfcDetail> allRequestedRfcDetails = rfcDetailRepository.findAllRequestedRfcDetails(refCode, pageable);
 
-        if (allRequestedRfcDetails.getContent().size()==0){
+        if (allRequestedRfcDetails.getContent().size() == 0) {
             return new PageResult<>();
         }
-        return new PageResult<>(rfcDetailConvert.convertAllToCurrentRfcStatus(allRequestedRfcDetails.getContent(), RequestType.PRE_APPROVAL),
+        return new PageResult<>(rfcDetailConvert.convertAllToCurrentRfcStatus(allRequestedRfcDetails.getContent()),
                 allRequestedRfcDetails.getNumber(),
                 allRequestedRfcDetails.getTotalElements(),
                 allRequestedRfcDetails.getTotalPages());
@@ -117,6 +117,22 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         return rfcDetailConvert.convertToRfcDetail(rfcSupportApproveDetailById, rfcDetail, userMiniResourceByUserIds);
 
     }
+
+    @Override
+    public PageResult<RfcPreapprovalResponse> getAllRequestedForPreApprovalDetails(String refCode, String requestedFor, Pageable pageable) {
+        PageResult<RfcDetail> allExpenditureDetailsWithRequestedForType = rfcSupportApproveDetailService
+                .findAllExpenditureDetailsWithRequestedForType(
+                        refCode,
+                        requestedFor,
+                        pageable);
+
+        List<RfcDetail> results = allExpenditureDetailsWithRequestedForType.getResults();
+        return new PageResult<>(rfcDetailConvert.convertAllToCurrentRfcStatus
+                (results),
+                allExpenditureDetailsWithRequestedForType.getPage(),
+                allExpenditureDetailsWithRequestedForType.getTotalResult(), allExpenditureDetailsWithRequestedForType.getTotalPages());
+    }
+
 
     @Override
     public RfcDetail findById(Long id) {
