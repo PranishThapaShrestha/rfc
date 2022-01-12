@@ -103,20 +103,31 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     @Override
     public RfcDetailResponse getPreApprovalRfcDetail(Long rfcDetailId) {
 
-        List<RfcSupportApproveDetail> rfcSupportApproveDetailById = rfcSupportApproveDetailService
+        List<RfcSupportApproveDetail> rfcSupportApproveDetails = rfcSupportApproveDetailService
                 .findRfcSupportApproveDetailById(rfcDetailId);
 
-        List<Long> approversSupportersIds = rfcSupportApproveDetailById.stream()
-                .map(rfcSupportApproveDetail -> rfcSupportApproveDetail.getUser().getId())
-                .collect(Collectors.toList());
+        List<Long> userIds = rfcSupportApproveDetails.stream().map(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                .getUser().getId()).collect(Collectors.toList());
 
-        RfcDetail rfcDetail = findById(rfcDetailId);
+        RfcDetail rfcDetail=findById(rfcDetailId);
 
-        Map<Long, UserMiniResource> userMiniResourceByUserIds = userService.findUserMiniResourceByUserIds(approversSupportersIds);
+        Map<Long, UserMiniResource> userMiniResourceByUserIds = userService.findUserMiniResourceByUserIds(userIds);
 
-        return rfcDetailConvert.convertToRfcDetail(rfcSupportApproveDetailById, rfcDetail, userMiniResourceByUserIds);
+        return
+        rfcDetailConvert.convertToRfcDetail(rfcSupportApproveDetails,rfcDetail,userMiniResourceByUserIds);
 
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public PageResult<RfcPreapprovalResponse> getAllRequestedForPreApprovalDetails(String refCode, String requestedFor, Pageable pageable) {

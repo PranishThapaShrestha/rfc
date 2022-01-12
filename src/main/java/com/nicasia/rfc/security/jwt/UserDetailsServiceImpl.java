@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public Userprincipal loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username).orElseThrow
-                (() -> new UsernameNotFoundException("User not found as named"));
+                (() -> new UsernameNotFoundException("User not found of given name"));
 
         return Userprincipal.build(user);
     }
@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public Userprincipal loadByUserId(Long id) throws UsernameNotFoundException {
         User user = userRepository.findById(id).orElseThrow
-                (() -> new UsernameNotFoundException("User not found as Id"));
+                (() -> new UsernameNotFoundException("User not found of given Id"));
 
 
         return Userprincipal.build(user);

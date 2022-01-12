@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @Builder
 public class SupportedApprovedDetail {
-private Long approveSupportId;
-private UserMiniResource userMiniResource;
-private String status;
-private String requestedFor;
-private String type;
+    private Long approveSupportId;
+    private UserMiniResource userMiniResource;
+    private String status;
+    private String requestedFor;
+
 
 }
