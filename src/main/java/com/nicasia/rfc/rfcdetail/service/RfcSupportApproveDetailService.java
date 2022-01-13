@@ -15,10 +15,10 @@ public interface RfcSupportApproveDetailService {
                                    RfcDetail rfcDetail, RequestType requestType
                                    );
 
-    List<RfcSupportApproveDetail> findRfcSupportApproveDetailById(Long rfcDetailId);
+    List<RfcSupportApproveDetail> findAllRfcSupportApproveDetailByRfcId(Long rfcDetailId);
 
     PageResult<RfcDetail> findAllExpenditureDetailsWithRequestedForType(String refCode,
                                                                         String requestedFor,
                                                                         Pageable pageable);
-
+    void saveDetail(RfcSupportApproveDetail rfcSupportApproveDetail);
 }

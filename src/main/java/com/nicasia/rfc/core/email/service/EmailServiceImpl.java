@@ -48,24 +48,33 @@ public class EmailServiceImpl implements EmailService {
                 StandardCharsets.UTF_8.name());
         Template template = null;
         if (emailType.equals(EmailType.UPDATED)) {
+            template = freeMarkerConfiguration.getTemplate("approved-supported-email.ftl");
+        } else {
             template = freeMarkerConfiguration.getTemplate("approval-support-email.ftl");
-            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mail.getModel());
-            mimeMessageHelper.setTo(mail.getTo());
-            mimeMessageHelper.setText(html, true);
-            mimeMessageHelper.setSubject(mail.getSubject());
-            mimeMessageHelper.setFrom(mail.getFrom());
-            mailSender.send(mimeMessage);
         }
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mail.getModel());
+        mimeMessageHelper.setTo(mail.getTo());
+        mimeMessageHelper.setText(html, true);
+        mimeMessageHelper.setSubject(mail.getSubject());
+        mimeMessageHelper.setFrom(mail.getFrom());
+        mailSender.send(mimeMessage);
     }
+
 
     @Async
     @Override
-    public void pushEmails(List<Mail> emailRequest) {
+    public void pushMails(List<Mail> emailRequest) {
 
         if (emailRequest.size() == 0) {
             return;
         }
         emailRequest.stream()
                 .map(mail -> sendApproveSupportMail(mail, EmailType.REQUESTED));
+    }
+
+    @Async
+    @Override
+    public void pushSupportedApprovedMails(Mail emailRequest) {
+        sendApproveSupportMail(emailRequest, EmailType.UPDATED);
     }
 }

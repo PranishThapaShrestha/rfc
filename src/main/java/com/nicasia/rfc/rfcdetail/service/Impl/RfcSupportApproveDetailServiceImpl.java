@@ -62,12 +62,17 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
                 ,userMap,rfcDetail,requestType,RequestedForType.CREATE));
 
 
-        emailService.pushEmails(emailTo(rfcSupportApproveDetails));
+        emailService.pushMails(emailTo(rfcSupportApproveDetails));
         rfcSupportApproveDetailRepository.saveAll(rfcSupportApproveDetails);
     }
 
     @Override
-    public List<RfcSupportApproveDetail> findRfcSupportApproveDetailById(Long rfcDetailId) {
+    public void saveDetail(RfcSupportApproveDetail rfcSupportApproveDetail) {
+        rfcSupportApproveDetailRepository.save(rfcSupportApproveDetail);
+    }
+
+    @Override
+    public List<RfcSupportApproveDetail> findAllRfcSupportApproveDetailByRfcId(Long rfcDetailId) {
         return rfcSupportApproveDetailRepository.findAllByRfcId(rfcDetailId);
     }
 

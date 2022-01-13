@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface EmailService {
 
-    void pushEmails(List<Mail> emailRequest);
+    void pushMails(List<Mail> emailRequest);
+
+    void pushSupportedApprovedMails(Mail emailRequest);
 
 }
 
