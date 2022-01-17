@@ -38,28 +38,27 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
     @Override
     public void saveSupportApproveDetails(List<Long> approvedByUserIds,
                                           List<Long> supportedByUserIds,
-                                          RfcDetail rfcDetail,
-                                          RequestType requestType) {
+                                          RfcDetail rfcDetail) {
 
-        List<Long> userIds= new ArrayList<>();
+        List<Long> userIds = new ArrayList<>();
         userIds.addAll(approvedByUserIds);
         userIds.addAll(supportedByUserIds);
 
         Map<Long, User> userMap = userService.findAllUserByIdsIn(userIds).stream().collect(Collectors
                 .toMap(user -> user.getId(), o -> o));
-        userMap.put(AuthUtil.getCurrentUser().getId(),AuthUtil.getCurrentUser());
+        userMap.put(AuthUtil.getCurrentUser().getId(), AuthUtil.getCurrentUser());
 
         List<RfcSupportApproveDetail> rfcSupportApproveDetails = new ArrayList<>();
         rfcSupportApproveDetails.addAll(approvedByUserIds.stream().map(aLong ->
-                saveApproverSupporter(aLong,userMap,rfcDetail,requestType,RequestedForType.APPROVE))
+                saveApproverSupporter(aLong, userMap, rfcDetail, RequestedForType.APPROVE))
                 .collect(Collectors.toList()));
 
         rfcSupportApproveDetails.addAll(supportedByUserIds.stream().map(aLong ->
-                saveApproverSupporter(aLong,userMap,rfcDetail,requestType,RequestedForType.SUPPORT))
+                saveApproverSupporter(aLong, userMap, rfcDetail, RequestedForType.SUPPORT))
                 .collect(Collectors.toList()));
 
         rfcSupportApproveDetails.add(saveApproverSupporter(AuthUtil.getCurrentUser().getId()
-                ,userMap,rfcDetail,requestType,RequestedForType.CREATE));
+                , userMap, rfcDetail, RequestedForType.CREATE));
 
 
         emailService.pushMails(emailTo(rfcSupportApproveDetails));
@@ -79,11 +78,9 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
     public RfcSupportApproveDetail saveApproverSupporter(Long userIds,
                                                          Map<Long, User> userMap,
                                                          RfcDetail rfcDetail,
-                                                         RequestType requestType,
                                                          RequestedForType requestedForType) {
         RfcSupportApproveDetail rfcSupportApproveDetail = new RfcSupportApproveDetail();
         rfcSupportApproveDetail.setRequestedForType(requestedForType);
-        rfcSupportApproveDetail.setRequestType(requestType);
         rfcSupportApproveDetail.setStatus(Status.ACTIVE);
         rfcSupportApproveDetail.setRfcApprovalStatus(RfcApprovalStatus.REQUESTED);
         rfcSupportApproveDetail.setRfcDetail(rfcDetail);
@@ -113,7 +110,7 @@ public class RfcSupportApproveDetailServiceImpl implements RfcSupportApproveDeta
                 .map(rfcSupportApproveDetail -> convertToMailHelper(rfcSupportApproveDetail,
                         rfcSupportApproveDetail1.getUser().getName())).collect(Collectors.toList());
     }
-    
+
 
     private Mail convertToMailHelper(RfcSupportApproveDetail rfcSupportApproveDetail, String username) {
 

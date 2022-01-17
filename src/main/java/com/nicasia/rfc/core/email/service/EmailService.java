@@ -8,7 +8,7 @@ public interface EmailService {
 
     void pushMails(List<Mail> emailRequest);
 
-    void pushSupportedApprovedMails(Mail emailRequest);
+    void pushSupportedApprovedMail(Mail emailRequest);
 
 }
 

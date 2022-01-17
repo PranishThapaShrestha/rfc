@@ -1,6 +1,5 @@
 package com.nicasia.rfc.rfcdetail.service;
 
-import com.nicasia.rfc.rfcdetail.entity.RequestType;
 import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
 import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.util.PageResult;
@@ -12,7 +11,7 @@ public interface RfcSupportApproveDetailService {
 
     void saveSupportApproveDetails(List<Long> approvedByUserIds,
                                    List<Long> supportedByUserIds,
-                                   RfcDetail rfcDetail, RequestType requestType
+                                   RfcDetail rfcDetail
                                    );
 
     List<RfcSupportApproveDetail> findAllRfcSupportApproveDetailByRfcId(Long rfcDetailId);

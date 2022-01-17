@@ -74,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void pushSupportedApprovedMails(Mail emailRequest) {
+    public void pushSupportedApprovedMail(Mail emailRequest) {
         sendApproveSupportMail(emailRequest, EmailType.UPDATED);
     }
 }

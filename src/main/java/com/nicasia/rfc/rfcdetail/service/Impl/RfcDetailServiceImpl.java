@@ -82,7 +82,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         rfcSupportApproveDetailService.saveSupportApproveDetails(
                 rfcDetailRequest.getApprovedByUserIds()
                 , rfcDetailRequest.getSupportedByUserIds()
-                , rfcDetail1, RequestType.PRE_APPROVAL);
+                , rfcDetail1);
 
         return SuccessResponse.builder().successMessage("Request for change is created with list of supporters and one approver").build();
     }
@@ -138,79 +138,90 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     @Override
     public SuccessResponse putRemarks(PutRemarksDto putRemarksDto, Long rfcDetailId) {
 
-        List<RfcSupportApproveDetail> rfcSupportApproveDetails = rfcSupportApproveDetailService
+        List<RfcSupportApproveDetail> allRfcSupportApproveDetailByRfcId = rfcSupportApproveDetailService
                 .findAllRfcSupportApproveDetailByRfcId(rfcDetailId);
         User currentUser = AuthUtil.getCurrentUser();
 
-        Optional<RfcSupportApproveDetail> first = rfcSupportApproveDetails.stream()
-                .filter(rfcSupportApproveDetail -> (rfcSupportApproveDetail.getUser().getId().equals(currentUser.getId()))
-                        && (rfcSupportApproveDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.valueOf(putRemarksDto.getStatus())
-                ))).findFirst();
+        Optional<RfcSupportApproveDetail> first = allRfcSupportApproveDetailByRfcId.stream().filter(rfcSupportApproveDetail -> (rfcSupportApproveDetail.getUser().getId()
+                .equals(currentUser.getId()))
+                &&
+                (rfcSupportApproveDetail.getRfcApprovalStatus().equals(putRemarksDto.getStatus()))).findFirst();
+
         if (first.isPresent()) {
-            throw new ClientException("Dear user this action has already been done.");
+            throw new ClientException("Dear user the action has already been done");
         }
-        if (rfcSupportApproveDetails != null && rfcSupportApproveDetails.size() > 0) {
 
-            RfcSupportApproveDetail rfcSupportApproveDetail1 = (rfcSupportApproveDetails.stream()
-                    .filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
-                            .getUser().getId().equals(currentUser.getId()))).findFirst()
-                    .orElseThrow(() -> new ClientException("Sorry details not found"));
+        if (allRfcSupportApproveDetailByRfcId != null && allRfcSupportApproveDetailByRfcId.size() > 0) {
 
-            if (putRemarksDto.getStatus().equals(RequestedForType.APPROVE.name())) {
-                if (!didAllSupported(rfcSupportApproveDetails)) {
-                    throw new ClientException("This request is not been supported by all supporters");
+            RfcSupportApproveDetail rfcSupportApproveDetail1 = (allRfcSupportApproveDetailByRfcId.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                    .getUser().getId().equals(currentUser.getId()))).findFirst()
+                    .orElseThrow(() -> new ClientException("Details not found"));
 
+            if (putRemarksDto.getStatus().equals(RfcApprovalStatus.APPROVED.name())) {
+                if (!didAllSupported(allRfcSupportApproveDetailByRfcId)) {
+                    throw new ClientException("Sorry this request is still not supported by everyone");
                 }
             }
             rfcSupportApproveDetail1.setRfcApprovalStatus(RfcApprovalStatus.valueOf(putRemarksDto.getStatus()));
             rfcSupportApproveDetailService.saveDetail(rfcSupportApproveDetail1);
-
-            return SuccessResponse.builder().successMessage("" + putRemarksDto.getStatus() + "Successful").build();
-
+            finalUpdateOfRfcDetail(rfcDetailId, putRemarksDto, allRfcSupportApproveDetailByRfcId);
+            //TODO still need to work on this
+            return SuccessResponse.builder().successMessage("" + putRemarksDto.getStatus() + "successfull").build();
         }
-        throw new ClientException("Details not found");
+        throw new ClientException("error");
     }
 
     private void finalUpdateOfRfcDetail(Long expenditureId,
                                         PutRemarksDto putRemarksDto,
                                         List<RfcSupportApproveDetail> allRfcSupportApproveDetailsById) {
 
+        RfcSupportApproveDetail rfcSupportApproveDetail1 = allRfcSupportApproveDetailsById
+                .stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                        .getRequestedForType().equals(RequestedForType.CREATE)).findFirst().get();
 
-        RfcSupportApproveDetail createdDetail = allRfcSupportApproveDetailsById.stream()
+        List<RfcSupportApproveDetail> rfcSupportApproveDetails = allRfcSupportApproveDetailsById.stream()
                 .filter(rfcSupportApproveDetail -> rfcSupportApproveDetail.getRequestedForType()
-                        .equals(RequestedForType.CREATE)).findFirst().get();
-
-        allRfcSupportApproveDetailsById.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail.getRequestedForType()
-                .equals(RequestedForType.SUPPORT)).collect(Collectors.toList());
+                        .equals(RequestedForType.SUPPORT)).collect(Collectors.toList());
 
         RfcDetail rfcDetail = rfcDetailRepository.findById(expenditureId).get();
+
         if (putRemarksDto.getStatus().equals(RfcApprovalStatus.SUPPORTED.name())) {
             if (didAllSupported(allRfcSupportApproveDetailsById)) {
-                rfcDetail.setDatedecided(new Date());
                 rfcDetail.setRfcApprovalStatus(RfcApprovalStatus.SUPPORTED);
+                rfcDetail.setDatedecided(new Date());
                 emailService.pushMails(getMailHelper(allRfcSupportApproveDetailsById,
                         allRfcSupportApproveDetailsById.get(0).getRfcDetail().getPreApprovalMemoCode()));
             }
         }
 
-
-
+        if (putRemarksDto.getStatus().equals(RfcApprovalStatus.APPROVED.name())) {
+            if ((rfcSupportApproveDetails.size() > 0 && rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.SUPPORTED))
+                    || (rfcSupportApproveDetails.size() == 0 && (rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.REQUESTED))
+                    || rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.SUPPORTED))) {
+                rfcDetail.setDatedecided(new Date());
+                rfcDetail.setRfcApprovalStatus(RfcApprovalStatus.APPROVED);
+                emailService.pushSupportedApprovedMail(mailToSingle(RequestedForType.APPROVE.name(),
+                        rfcSupportApproveDetail1.getUser().getName(),
+                        rfcSupportApproveDetail1.getUser().getEmail(),
+                        rfcSupportApproveDetail1.getRfcDetail().getPreApprovalMemoCode()));
+            } else {
+                throw new ClientException("Sorry this request is not yet supported by all supporters");
+            }
+        }
     }
 
     private boolean didAllSupported(List<RfcSupportApproveDetail> rfcSupportApproveDetails) {
 
-        List<RfcSupportApproveDetail> supportApproveDetails = rfcSupportApproveDetails.stream()
-                .filter(rfcSupportApproveDetail -> (rfcSupportApproveDetail.getRequestedForType()
-                        .equals(RequestedForType.SUPPORT))
-                        && (rfcSupportApproveDetail.getRfcApprovalStatus()
-                        .equals(RfcApprovalStatus.REQUESTED)))
-                .collect(Collectors.toList());
-        if (supportApproveDetails.size() > 0) {
+        List<RfcSupportApproveDetail> collect = rfcSupportApproveDetails.stream().filter(rfcSupportApproveDetail -> (rfcSupportApproveDetail
+                .getRequestedForType().equals(RequestedForType.SUPPORT))
+                &&
+                (rfcSupportApproveDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.REQUESTED))).collect(Collectors.toList());
+
+        if (collect.size() > 0) {
             return false;
         }
         return true;
     }
-
 
     @Override
     public RfcDetail findById(Long id) {
@@ -246,6 +257,19 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         mail.setSubject("Request For Change");
         mail.setTo(rfcSupportApproveDetail.getUser().getEmail());
         mail.setModel(objectMap);
+        return mail;
+    }
+
+    private Mail mailToSingle(String requestedFor, String fullName, String email, String memoCode) {
+        Mail mail = new Mail();
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("name", fullName);
+        objectMap.put("updatedBy", AuthUtil.getCurrentUser().getName());
+        objectMap.put("action", requestedFor);
+        objectMap.put("memoCode", memoCode);
+        mail.setTo(email);
+        mail.setModel(objectMap);
+        mail.setSubject("Request For Change");
         return mail;
     }
 
