@@ -6,6 +6,7 @@ import com.nicasia.rfc.core.usermanagement.department.service.DepartmentService;
 import com.nicasia.rfc.core.usermanagement.user.dto.UserMiniResource;
 import com.nicasia.rfc.core.usermanagement.user.entity.User;
 import com.nicasia.rfc.core.usermanagement.user.service.UserService;
+import com.nicasia.rfc.evaluation.service.EvaluationService;
 import com.nicasia.rfc.rfcdetail.dto.PutRemarksDto;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailRequest;
 import com.nicasia.rfc.rfcdetail.dto.RfcDetailResponse;
@@ -39,13 +40,14 @@ public class RfcDetailServiceImpl implements RfcDetailService {
     private final RfcDetailConvert rfcDetailConvert;
     private final EmailService emailService;
     private final RfcSupportApproveDetailService rfcSupportApproveDetailService;
+    private final EvaluationService evaluationService;
 
 
     public RfcDetailServiceImpl(DepartmentService departmentService,
                                 UserService userService,
                                 RfcDetailRepository rfcDetailRepository,
                                 RfcDetailConvert rfcDetailConvert,
-                                EmailService emailService, RfcSupportApproveDetailService rfcSupportApproveDetailService) {
+                                EmailService emailService, RfcSupportApproveDetailService rfcSupportApproveDetailService, EvaluationService evaluationService) {
         this.departmentService = departmentService;
         this.userService = userService;
         this.rfcDetailRepository = rfcDetailRepository;
@@ -53,6 +55,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         this.emailService = emailService;
         this.rfcSupportApproveDetailService = rfcSupportApproveDetailService;
 
+        this.evaluationService = evaluationService;
     }
 
     @Override
@@ -183,6 +186,7 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                 .filter(rfcSupportApproveDetail -> rfcSupportApproveDetail.getRequestedForType()
                         .equals(RequestedForType.SUPPORT)).collect(Collectors.toList());
 
+
         RfcDetail rfcDetail = rfcDetailRepository.findById(expenditureId).get();
 
         if (putRemarksDto.getStatus().equals(RfcApprovalStatus.SUPPORTED.name())) {
@@ -195,6 +199,11 @@ public class RfcDetailServiceImpl implements RfcDetailService {
         }
 
         if (putRemarksDto.getStatus().equals(RfcApprovalStatus.APPROVED.name())) {
+            RfcSupportApproveDetail rfcSupportApproveDetail2 = (allRfcSupportApproveDetailsById.stream().filter(rfcSupportApproveDetail -> rfcSupportApproveDetail
+                    .getRequestedForType().equals(RequestedForType.APPROVE)).findFirst()).get();
+
+            evaluationService.addEvaluation(putRemarksDto,rfcSupportApproveDetail2);
+
             if ((rfcSupportApproveDetails.size() > 0 && rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.SUPPORTED))
                     || (rfcSupportApproveDetails.size() == 0 && (rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.REQUESTED))
                     || rfcDetail.getRfcApprovalStatus().equals(RfcApprovalStatus.SUPPORTED))) {
@@ -208,7 +217,8 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                 throw new ClientException("Sorry this request is not yet supported by all supporters");
             }
         }
-    }
+        }
+
 
     private boolean didAllSupported(List<RfcSupportApproveDetail> rfcSupportApproveDetails) {
 

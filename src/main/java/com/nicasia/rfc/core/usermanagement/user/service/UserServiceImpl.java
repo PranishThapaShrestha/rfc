@@ -131,38 +131,3 @@ public class UserServiceImpl implements UserService {
     }
 }
 
-
-//        Optional<User> user = userRepository.findByUserName(createUserRequest.getUsername().trim());
-//        if (user.isPresent() && !user.get().getId().equals(id)) {
-//            throw new ClientException("Client already exist");
-//        }
-//        User user1 = userRepository.findById(id).orElseThrow(
-//                () -> new ResourceNotAvailableException("User with id ::", "id", id));
-//        user1.setName(createUserRequest.getName());
-//        user1.setUsername(createUserRequest.getUsername());
-//        user1.setDepartment(departmentService.findById(createUserRequest.getDepartmentId()));
-//        user1.setDesignation(designationService.findById(createUserRequest.getDesignationId()));
-//        user1.setPassword(passwordEncoder.encode("12345"));
-//        user1.setStatus(Status.ACTIVE);
-//        Roles roles = roleRepository.findByName(RoleName.MODERATOR)
-//                .orElseThrow(() -> new ResourceNotAvailableException("Roles of name ::", "roles", RoleName.MODERATOR));
-//
-//        user1.setRoles(new HashSet<>(Arrays.asList(roles)));
-//        userRepository.save(user1);
-//
-//        return SuccessResponse.builder().successMessage("Update has been done").build();
-//        }
-//}
-
-
-//    @Override
-//    public SuccessResponse updateUser(Long id, CreateUserRequest createUserRequest) {
-//        Optional<User> user = userRepository.findByUserName(createUserRequest.getUsername().trim());
-//        if (user.isPresent() && !Objects.equals(user.get().getId(), id)) {
-//            throw new ClientException("client already exist");
-//        }
-//        addUserIfNotPresent( findById(id), createUserRequest);
-//        return SuccessResponse.builder().successMessage("Successfully updated the user").build();
-//    }
-//}
-

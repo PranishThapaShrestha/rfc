@@ -1,17 +1,17 @@
 package com.nicasia.rfc.evaluation.service;
 
-import com.nicasia.rfc.evaluation.dto.EvaluationRequest;
 import com.nicasia.rfc.evaluation.dto.EvaluationResponse;
+import com.nicasia.rfc.evaluation.entity.Evaluation;
+import com.nicasia.rfc.rfcdetail.dto.PutRemarksDto;
+import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 
 import java.util.List;
 
 public interface EvaluationService {
 
-    EvaluationResponse createEvaluation(Long id, EvaluationRequest evaluationRequest);
+Evaluation addEvaluation(PutRemarksDto putRemarksDto, RfcSupportApproveDetail rfcSupportApproveDetail);
 
-    EvaluationResponse findEvaluationById(Long id);
+EvaluationResponse findEvaluationBasedOnRfcId(List<RfcSupportApproveDetail> rfcSupportApproveDetails);
 
-    List<EvaluationResponse> getAllEvaluation();
-
-    EvaluationResponse updateEvaluation(Long id,EvaluationRequest evaluationRequest);
 }
+

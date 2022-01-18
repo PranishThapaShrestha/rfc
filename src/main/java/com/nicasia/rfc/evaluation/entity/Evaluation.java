@@ -1,6 +1,6 @@
 package com.nicasia.rfc.evaluation.entity;
 
-import com.nicasia.rfc.rfcdetail.entity.RfcDetail;
+import com.nicasia.rfc.rfcdetail.entity.RfcSupportApproveDetail;
 import com.nicasia.rfc.shared.abstracts.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Setter
 public class Evaluation extends BaseEntity {
 
-    @OneToOne
-    @JoinColumn(name = "rfcdetail_id")
-    private RfcDetail rfcdetail;
+    @ManyToOne
+    @JoinColumn(name = "rfc_support_approve_id")
+    private RfcSupportApproveDetail rfcSupportApproveDetail;
 
     @Column(name = "scope")
     private String scope;
@@ -32,7 +32,7 @@ public class Evaluation extends BaseEntity {
     private String riskbasedoncia;
 
     @Column(name = "evaluatorPriority")
-    private String evaluatorPriority;
+    private EvaluatorPriority evaluatorPriority;
 
     @Column(name = "alternativesandrecommendation")
     private String alternativesandrecommendation;

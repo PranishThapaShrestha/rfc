@@ -6,7 +6,10 @@ import com.nicasia.rfc.shared.abstracts.BaseRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-public class EvaluationRepoImpl extends BaseRepositoryImpl<Evaluation, EvaluationRepository> {
+import java.util.Optional;
+
+public class EvaluationRepoImpl extends BaseRepositoryImpl<Evaluation, EvaluationRepository>
+        implements EvaluationRepositoryCustom {
 
     QEvaluation qEvaluation = QEvaluation.evaluation;
 
@@ -17,6 +20,14 @@ public class EvaluationRepoImpl extends BaseRepositoryImpl<Evaluation, Evaluatio
     @Lazy
     @Autowired
     public void setRepository(EvaluationRepository evaluationRepository) {
+
         this.repository = evaluationRepository;
+    }
+
+    @Override
+    public Optional<Evaluation> findByRfcSupportApproveId(Long rfcSupportApproveId) {
+        return repository.findOne(qEvaluation.rfcSupportApproveDetail.id.eq(rfcSupportApproveId));
+
+
     }
 }

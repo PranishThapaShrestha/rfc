@@ -23,9 +23,10 @@ public interface UserService {
 
     Map<Long, UserMiniResource> findUserMiniResourceByUserIds(List<Long> userIds);
 
+    //    UserMiniResource findUserMiniResourceById(Long userId);
     User findById(Long id);
 
     Optional<User> findByName(String name);
 
-    SuccessResponse updateUser(Long id,CreateUserRequest createUserRequest);
+    SuccessResponse updateUser(Long id, CreateUserRequest createUserRequest);
 }
