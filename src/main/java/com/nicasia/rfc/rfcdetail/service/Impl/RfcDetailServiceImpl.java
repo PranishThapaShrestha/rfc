@@ -161,6 +161,8 @@ public class RfcDetailServiceImpl implements RfcDetailService {
                     .getUser().getId().equals(currentUser.getId()))).findFirst()
                     .orElseThrow(() -> new ClientException("Details not found"));
 
+
+            //
             if (putRemarksDto.getStatus().equals(RfcApprovalStatus.APPROVED.name())) {
                 if (!didAllSupported(allRfcSupportApproveDetailByRfcId)) {
                     throw new ClientException("Sorry this request is still not supported by everyone");
